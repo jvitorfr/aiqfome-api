@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthClientController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Client\FavoriteController;
+use App\Http\Controllers\Client\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthUserController;
 
@@ -19,15 +20,13 @@ Route::prefix('client')->group(function () {
         Route::apiResource('products', ProductController::class)
             ->only(['index', 'show', 'update', 'destroy']);
 
-        Route::apiResource('favorites', \App\Http\Controllers\FavoriteController::class)
+        Route::apiResource('favorites', FavoriteController::class)
             ->only(['index', 'store', 'destroy']);
     });
 
-    });
-
-
 });
 
+Route::get('test-swagger', [\App\Http\Controllers\TestSwaggerController::class, 'test']);
 
 Route::prefix('user')->group(function () {
     Route::post('login', [AuthUserController::class, 'login']);

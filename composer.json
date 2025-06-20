@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "darkaonline/l5-swagger": "^9.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.10.1",
@@ -27,7 +28,15 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "exclude-from-classmap": [
+            "app/Http/",
+            "app/Http/Clients",
+            "app/Services",
+            "app/Repositories",
+            "app/Services/Logging",
+            "app/Models"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -12,6 +12,33 @@ use Illuminate\Http\JsonResponse;
 
 class AuthUserController extends BaseController
 {
+    /**
+     * @OA\Post(
+     *     path="/api/user/login",
+     *     summary="Login do usuário do sistema (admin)",
+     *     tags={"Auth - User"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password", minLength=8)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login bem-sucedido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string"),
+     *             @OA\Property(property="user", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Credenciais inválidas"
+     *     )
+     * )
+     */
     public function login(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -35,13 +62,41 @@ class AuthUserController extends BaseController
         ]);
     }
 
-
+    /**
+     * @OA\Post(
+     *     path="/api/user/logout",
+     *     summary="Logout do usuário do sistema",
+     *     tags={"Auth - User"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout realizado com sucesso"
+     *     )
+     * )
+     */
     public function logout(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();
         return $this->respondMessage('Logout realizado com sucesso');
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/user/me",
+     *     summary="Retorna o usuário autenticado (admin)",
+     *     tags={"Auth - User"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dados do usuário autenticado",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Não autenticado"
+     *     )
+     * )
+     */
     public function me(): JsonResponse
     {
         $user = Auth::guard('sanctum')->user();
@@ -52,5 +107,4 @@ class AuthUserController extends BaseController
 
         return $this->respondSuccess($user);
     }
-
 }

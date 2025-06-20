@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Http\Controllers\Client;
+
+use App\Http\Controllers\BaseController;
+use App\Services\ProductService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
+
+class FavoriteController extends BaseController
+{
+    public function __construct(
+        protected ProductService $service
+    ) {}
+
+    /**
+     * @OA\Get(
+     *     path="/api/client/favorites/{clientId}",
+     *     summary="Lista os produtos favoritos de um cliente",
+     *     tags={"Favorites"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="clientId",
+     *         in="path",
+     *         required=true,
+     *         description="ID do cliente",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de favoritos",
+     *         @OA\JsonContent(type="array", @OA\Items(type="object"))
+     *     )
+     * )
+     */
+    public function index(int $clientId): JsonResponse
+    {
+        $products = $this->service->getFavoritesByClientId($clientId);
+        return $this->respondSuccess($products);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/client/favorites/plus",
+     *     summary="Incrementa (ou cria) um produto favorito",
+     *     tags={"Favorites"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_id"},
+     *             @OA\Property(property="product_id", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Produto favoritado",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Produto inválido"
+     *     )
+     * )
+     */
+    public function plus(Request $request): JsonResponse
+    {
+        $request->validate(['product_id' => 'required|integer']);
+
+        $result = $this->service->incrementFavorite($request->user()->id, $request->product_id);
+
+        return $result
+            ? $this->respondSuccess($result)
+            : $this->respondError('Produto inválido', 422);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/client/favorites/minus",
+     *     summary="Decrementa ou remove um favorito",
+     *     tags={"Favorites"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_id"},
+     *             @OA\Property(property="product_id", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Quantidade atualizada ou item removido"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Favorito não encontrado"
+     *     )
+     * )
+     */
+    public function minus(Request $request): JsonResponse
+    {
+        $request->validate(['product_id' => 'required|integer']);
+
+        $success = $this->service->decrementFavorite($request->user()->id, $request->product_id);
+
+        return $success
+            ? $this->respondMessage('Quantidade atualizada/removida')
+            : $this->respondError('Favorito não encontrado', 404);
+    }
+}

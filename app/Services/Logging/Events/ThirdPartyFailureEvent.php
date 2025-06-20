@@ -4,15 +4,15 @@ namespace App\Services\Logging\Events;
 
 use App\Services\Logging\Contracts\ThirdPartyLoggable;
 
-class ThirdPartyFailureEvent implements ThirdPartyLoggable
+readonly class ThirdPartyFailureEvent implements ThirdPartyLoggable
 {
     public function __construct(
-        private readonly string $service,
-        private readonly string $action,
-        private readonly string $status = 'fail',
-        private readonly array $payload = [],
-        private readonly ?string $error = null,
-        private readonly array $tags = [],
+        private string  $service,
+        private string  $action,
+        private string  $status = 'fail',
+        private array   $payload = [],
+        private ?string $error = null,
+        private array   $tags = [],
     ) {}
 
     public function getServiceName(): string

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Clients\ThirdPartyProductsClient;
+use Services\External\ThirdPartyProductsClient;
 use App\Repositories\FavoriteRepository;
 
 class ProductService

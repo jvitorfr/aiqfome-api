@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Clients;
+namespace App\Services\External;
 
 use App\Services\Logging\ThirdPartyLogger;
 use App\Services\Logging\Events\ThirdPartyFailureEvent;
