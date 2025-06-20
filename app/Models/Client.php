@@ -36,7 +36,7 @@ class Client extends Authenticatable implements JWTSubject
 
     public function getJWTIdentifier()
     {
-        return $this->getKey(); // geralmente o ID
+        return $this->getKey();
     }
 
     public function getJWTCustomClaims()
