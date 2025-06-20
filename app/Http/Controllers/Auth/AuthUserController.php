@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +12,10 @@ use Illuminate\Http\JsonResponse;
 
 class AuthUserController extends BaseController
 {
+
+    public function __construct(
+        protected UserService $service
+    ) {}
     /**
      * @OA\Post(
      *     path="/api/user/login",
@@ -38,6 +42,7 @@ class AuthUserController extends BaseController
      *         description="Credenciais inválidas"
      *     )
      * )
+     * @throws ValidationException
      */
     public function login(Request $request): JsonResponse
     {
@@ -46,7 +51,7 @@ class AuthUserController extends BaseController
             'password' => ['required', 'string', 'min:8'],
         ]);
 
-        $user = User::where('email', $data['email'])->first();
+        $user = $this->service->findByEmail($data['email']);
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([

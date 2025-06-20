@@ -16,7 +16,7 @@ Route::prefix('client')->group(function () {
         Route::post('logout', [AuthClientController::class, 'logout']);
     });
 
-    Route::middleware('auth:api')->prefix('client')->group(function () {
+    Route::middleware('auth:api')->group(function () {
         Route::apiResource('products', ProductController::class)
             ->only(['index', 'show', 'update', 'destroy']);
 
