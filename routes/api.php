@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthClientController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthUserController;
 
@@ -15,9 +16,16 @@ Route::prefix('client')->group(function () {
     });
 
     Route::middleware('auth:api')->prefix('client')->group(function () {
-        Route::apiResource('favorites', \App\Http\Controllers\Client\FavoriteController::class)
+        Route::apiResource('products', ProductController::class)
+            ->only(['index', 'show', 'update', 'destroy']);
+
+        Route::apiResource('favorites', \App\Http\Controllers\FavoriteController::class)
             ->only(['index', 'store', 'destroy']);
     });
+
+    });
+
+
 });
 
 
