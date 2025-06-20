@@ -4,13 +4,9 @@ namespace App\Http\Clients;
 
 use App\Services\Logging\ThirdPartyLogger;
 use App\Services\Logging\Events\ThirdPartyFailureEvent;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Throwable;
 
 readonly class ThirdPartyProductsClient
 {
@@ -34,7 +30,7 @@ readonly class ThirdPartyProductsClient
             if ($response->getStatusCode() === 200) {
                 return $response->toArray();
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ThirdPartyLogger::warning('Erro em getProductById', new ThirdPartyFailureEvent(
                 service: 'FakeStore',
                 action: 'getProductById',
@@ -52,7 +48,7 @@ readonly class ThirdPartyProductsClient
         try {
             $response = $this->http->request('GET', '/products');
             return $response->toArray();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ThirdPartyLogger::warning('Erro em getAll', new ThirdPartyFailureEvent(
                 service: 'FakeStore',
                 action: 'getAll',
@@ -75,7 +71,7 @@ readonly class ThirdPartyProductsClient
             if ($response->getStatusCode() === 200) {
                 return $response->toArray();
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ThirdPartyLogger::warning('Erro em updateProduct', new ThirdPartyFailureEvent(
                 service: 'FakeStore',
                 action: 'updateProduct',
@@ -93,7 +89,7 @@ readonly class ThirdPartyProductsClient
         try {
             $response = $this->http->request('DELETE', "/products/{$id}");
             return $response->getStatusCode() === 200;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ThirdPartyLogger::warning('Erro em deleteProduct', new ThirdPartyFailureEvent(
                 service: 'FakeStore',
                 action: 'deleteProduct',
