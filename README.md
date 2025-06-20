@@ -13,8 +13,10 @@ Repositório: [https://github.com/jvitorfr/aiqfome-api](https://github.com/jvito
 - Laravel 11
 - PostgreSQL 15
 - Docker + Nginx
-- JWT Auth (`tymon/jwt-auth`)
-- OpenAPI/Swagger
+- JWT Auth (`tymon/jwt-auth`) para `clients`
+- Laravel Sanctum para `users`
+- OpenAPI/Swagger (`l5-swagger`)
+- Symfony HTTP Client
 
 ---
 
@@ -39,9 +41,6 @@ docker-compose up -d --build
 # Acesse o container
 docker exec -it aiqfome-api-app bash
 
-# Instale o Laravel (se ainda não estiver na pasta)
-composer create-project laravel/laravel . --prefer-dist
-
 # Copie o arquivo de ambiente e gere a chave da aplicação
 cp .env.example .env
 php artisan key:generate 
@@ -60,3 +59,6 @@ php artisan migrate
 
 # Gere a chave JWT
 php artisan jwt:secret
+
+# Gere a documentação Swagger
+php artisan l5-swagger:generate
