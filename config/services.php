@@ -18,6 +18,11 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'fakestore' => [
+        'base_uri' => env('FAKESTORE_API_URL', 'https://fakestoreapi.com'),
+        'timeout' => 5,
+    ],
+
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],

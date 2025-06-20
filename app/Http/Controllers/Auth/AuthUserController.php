@@ -16,7 +16,7 @@ class AuthUserController extends BaseController
     {
         $data = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:8'], // senha forte
+            'password' => ['required', 'string', 'min:8'],
         ]);
 
         $user = User::where('email', $data['email'])->first();

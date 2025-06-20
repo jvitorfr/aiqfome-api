@@ -2,22 +2,30 @@
 
 use App\Http\Controllers\Auth\AuthClientController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthUserController;
 
 
-// JWT para clientes
 Route::prefix('client')->group(function () {
     Route::post('login', [AuthClientController::class, 'login']);
-    Route::get('me', [AuthClientController::class, 'me']);
     Route::post('register', [AuthClientController::class, 'register']);
-    Route::post('logout', [AuthClientController::class, 'logout']);
+
+    Route::middleware('auth:api')->group(function () {
+        Route::get('me', [AuthClientController::class, 'me']);
+        Route::post('logout', [AuthClientController::class, 'logout']);
+    });
+
+    Route::middleware('auth:api')->prefix('client')->group(function () {
+        Route::apiResource('favorites', \App\Http\Controllers\Client\FavoriteController::class)
+            ->only(['index', 'store', 'destroy']);
+    });
 });
 
-// Sanctum para usuários/admins
+
 Route::prefix('user')->group(function () {
-    Route::post('login', [UserAuthController::class, 'login']);
+    Route::post('login', [AuthUserController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('me', [UserAuthController::class, 'me']);
-        Route::post('logout', [UserAuthController::class, 'logout']);
+        Route::get('me', [AuthUserController::class, 'me']);
+        Route::post('logout', [AuthUserController::class, 'logout']);
     });
 });
