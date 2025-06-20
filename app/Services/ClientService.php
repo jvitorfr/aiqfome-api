@@ -40,6 +40,7 @@ readonly class ClientService
      */
     public function create(array $data): Model|Client
     {
+        $data['password'] = bcrypt($data['password']);
         return $this->repository->create($data);
     }
 

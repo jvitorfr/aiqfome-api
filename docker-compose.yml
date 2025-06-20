@@ -43,8 +43,24 @@ services:
     networks:
       - aiqfome-network
 
+  pgsql-testing:
+    image: postgres:16
+    container_name: aiqfome-pgsql-testing
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: aiqfome_testing
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgsql_testing_data:/var/lib/postgresql/data
+    networks:
+      - aiqfome-network
+
 networks:
   aiqfome-network:
 
 volumes:
   pgdata:
+  pgsql_testing_data:
