@@ -12,7 +12,6 @@ class ProductService
         protected FavoriteRepository $repository,
     ) {}
 
-    // Produtos externos (FakeStore)
     public function getAll(): array
     {
         return $this->external->getAll();

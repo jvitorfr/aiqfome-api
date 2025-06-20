@@ -1,6 +1,6 @@
 # 🍔 aiqfome-api
 
-API RESTful desenvolvida como parte do processo seletivo para Desenvolvedor(a) Back-end Pleno no aiqfome.  
+API RESTful desenvolvida como parte do processo seletivo para Desenvolvedor(a) Back-end no aiqfome.  
 Ela gerencia **clientes** e seus **produtos favoritos**, validando os produtos via uma API externa pública.
 
 Repositório: [https://github.com/jvitorfr/aiqfome-api](https://github.com/jvitorfr/aiqfome-api)
