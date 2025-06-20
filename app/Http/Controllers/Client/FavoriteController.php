@@ -16,17 +16,10 @@ class FavoriteController extends BaseController
 
     /**
      * @OA\Get(
-     *     path="/api/client/favorites/{clientId}",
-     *     summary="Lista os produtos favoritos de um cliente",
+     *     path="/api/client/favorites",
+     *     summary="Lista os produtos favoritos do client autenticado",
      *     tags={"Favorites"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
-     *         name="clientId",
-     *         in="path",
-     *         required=true,
-     *         description="ID do cliente",
-     *         @OA\Schema(type="integer")
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Lista de favoritos",
@@ -34,8 +27,10 @@ class FavoriteController extends BaseController
      *     )
      * )
      */
-    public function index(int $clientId): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $clientId = $request->user()->id;
+
         $products = $this->service->getFavoritesByClientId($clientId);
         return $this->respondSuccess($products);
     }
@@ -67,8 +62,9 @@ class FavoriteController extends BaseController
     public function plus(Request $request): JsonResponse
     {
         $request->validate(['product_id' => 'required|integer']);
+        $clientId = $request->user()->id;
 
-        $result = $this->service->incrementFavorite($request->user()->id, $request->product_id);
+        $result = $this->service->incrementFavorite($clientId, $request->product_id);
 
         return $result
             ? $this->respondSuccess($result)
@@ -101,8 +97,9 @@ class FavoriteController extends BaseController
     public function minus(Request $request): JsonResponse
     {
         $request->validate(['product_id' => 'required|integer']);
+        $clientId = $request->user()->id;
 
-        $success = $this->service->decrementFavorite($request->user()->id, $request->product_id);
+        $success = $this->service->decrementFavorite($clientId, $request->product_id);
 
         return $success
             ? $this->respondMessage('Quantidade atualizada/removida')

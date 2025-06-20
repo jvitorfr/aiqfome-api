@@ -12,6 +12,46 @@
         }
     ],
     "paths": {
+        "/api/admin/favorites/{clientId}": {
+            "get": {
+                "tags": [
+                    "Admin - Favorites"
+                ],
+                "summary": "Lista os produtos favoritos de um cliente (admin)",
+                "operationId": "084b4a2f387e5876762e09079eda9775",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de favoritos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/client/register": {
             "post": {
                 "tags": [
@@ -278,24 +318,13 @@
                 ]
             }
         },
-        "/api/client/favorites/{clientId}": {
+        "/api/client/favorites": {
             "get": {
                 "tags": [
                     "Favorites"
                 ],
-                "summary": "Lista os produtos favoritos de um cliente",
-                "operationId": "16cead9200f4f28cbde1dfcda0db19a9",
-                "parameters": [
-                    {
-                        "name": "clientId",
-                        "in": "path",
-                        "description": "ID do cliente",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "summary": "Lista os produtos favoritos do client autenticado",
+                "operationId": "3cccbe20bdf560a161cba36c66b7c31d",
                 "responses": {
                     "200": {
                         "description": "Lista de favoritos",
@@ -634,6 +663,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Admin - Favorites",
+            "description": "Admin - Favorites"
+        },
         {
             "name": "Auth - Client",
             "description": "Auth - Client"
