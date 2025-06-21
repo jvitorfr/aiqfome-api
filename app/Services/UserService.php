@@ -12,7 +12,8 @@ readonly class UserService
 {
     public function __construct(
         private UserRepository $repository
-    ) {}
+    ) {
+    }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
@@ -34,8 +35,6 @@ readonly class UserService
     }
 
     /**
-     * @param array $data
-     * @return Model|User
      */
     public function create(array $data): Model|User
     {
@@ -44,9 +43,6 @@ readonly class UserService
     }
 
     /**
-     * @param Client $client
-     * @param array $data
-     * @return Model|User
      */
     public function update(Client $client, array $data): Model|User
     {

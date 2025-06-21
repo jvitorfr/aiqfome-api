@@ -7,7 +7,6 @@ use App\Repositories\FavoriteRepository;
 use App\Services\Cache\ProductCacheService;
 use App\Services\External\ThirdPartyProductsClient;
 use App\Services\Logging\AuditService;
-use Illuminate\Support\Facades\Cache;
 
 class ProductService
 {
@@ -16,8 +15,7 @@ class ProductService
         protected FavoriteRepository       $repository,
         protected ProductCacheService      $cache,
         protected AuditService      $audit,
-    )
-    {
+    ) {
     }
 
     public function getAll(): array
@@ -42,20 +40,22 @@ class ProductService
 
 
     /**
-     * @param int $clientId
-     * @return array
      */
     public function getFavoritesByClientId(int $clientId): array
     {
         return $this->cache->getFavoritesFromCache($clientId, function () use ($clientId) {
             $favorites = $this->repository->getByClientId($clientId)->keyBy('product_id');
 
-            if ($favorites->isEmpty()) return [];
+            if ($favorites->isEmpty()) {
+                return [];
+            }
 
             $products = [];
 
             foreach ($favorites as $productId => $favorite) {
-                $product = $this->cache->getProductFromCache($productId, fn() => $this->external->getProductById($productId)
+                $product = $this->cache->getProductFromCache(
+                    $productId,
+                    fn () => $this->external->getProductById($productId)
                 );
 
                 if ($product) {
@@ -68,9 +68,6 @@ class ProductService
     }
 
     /**
-     * @param int $clientId
-     * @param int $productId
-     * @return array|null
      */
     public function incrementFavorite(int $clientId, int $productId): ?array
     {
@@ -104,9 +101,6 @@ class ProductService
     }
 
     /**
-     * @param int $clientId
-     * @param int $productId
-     * @return bool
      */
     public function decrementFavorite(int $clientId, int $productId): bool
     {

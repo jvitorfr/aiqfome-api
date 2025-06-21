@@ -13,7 +13,8 @@ class ClientController extends BaseController
 {
     public function __construct(
         private readonly ClientService $service
-    ) {}
+    ) {
+    }
 
     public function index(): JsonResponse
     {

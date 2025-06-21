@@ -2,16 +2,17 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 
 abstract readonly class BaseRepository
 {
     public function __construct(
         protected Model $model
-    ) {}
+    ) {
+    }
 
     public function query(): Builder
     {

@@ -11,7 +11,8 @@ readonly class ClientService
 {
     public function __construct(
         private ClientRepository $repository
-    ) {}
+    ) {
+    }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
@@ -35,8 +36,6 @@ readonly class ClientService
     }
 
     /**
-     * @param array $data
-     * @return Model|Client
      */
     public function create(array $data): Model|Client
     {
@@ -45,9 +44,6 @@ readonly class ClientService
     }
 
     /**
-     * @param Client $client
-     * @param array $data
-     * @return Model|Client
      */
     public function update(Client $client, array $data): Model|Client
     {

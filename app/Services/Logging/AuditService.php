@@ -4,14 +4,15 @@ namespace App\Services\Logging;
 
 use App\Enums\AuditAction;
 use App\Repositories\AuditLogRepository;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class AuditService
 {
     public function __construct(
         protected AuditLogRepository $repository
-    ) {}
+    ) {
+    }
 
     public function log(
         AuditAction $action,

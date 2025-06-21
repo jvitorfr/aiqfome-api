@@ -12,7 +12,8 @@ class AuthClientController extends BaseController
 {
     public function __construct(
         private readonly ClientService $clientService
-    ) {}
+    ) {
+    }
 
     /**
      * @OA\Post(

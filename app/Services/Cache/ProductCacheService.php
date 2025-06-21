@@ -9,12 +9,12 @@ class ProductCacheService
     public function getFavoritesFromCache(int $clientId, callable $callback): array
     {
         return Cache::tags(["client:$clientId"])
-            ->remember("client_favorites", now()->addMinutes(6), $callback);
+            ->remember('client_favorites', now()->addMinutes(6), $callback);
     }
 
     public function clearFavoritesCache(int $clientId): void
     {
-        Cache::tags(["client:$clientId"])->forget("client_favorites");
+        Cache::tags(["client:$clientId"])->forget('client_favorites');
     }
 
     public function getProductFromCache(int $productId, callable $callback): ?array

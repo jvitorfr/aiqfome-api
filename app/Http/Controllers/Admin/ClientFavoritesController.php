@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Client;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\Client;
 use OpenApi\Annotations as OA;
 
 class ClientFavoritesController extends BaseController
 {
     public function __construct(
         protected ProductService $service
-    ) {}
+    ) {
+    }
 
     /**
      * @OA\Get(

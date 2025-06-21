@@ -12,10 +12,10 @@ use Illuminate\Validation\ValidationException;
 
 class AuthUserController extends BaseController
 {
-
     public function __construct(
         protected UserService $service
-    ) {}
+    ) {
+    }
     /**
      * @OA\Post(
      *     path="/api/admin/login",

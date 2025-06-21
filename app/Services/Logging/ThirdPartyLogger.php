@@ -2,8 +2,8 @@
 
 namespace App\Services\Logging;
 
-use Illuminate\Support\Facades\Log;
 use App\Services\Logging\Contracts\ThirdPartyLoggable;
+use Illuminate\Support\Facades\Log;
 
 class ThirdPartyLogger
 {

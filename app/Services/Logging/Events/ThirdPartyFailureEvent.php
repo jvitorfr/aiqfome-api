@@ -13,7 +13,8 @@ readonly class ThirdPartyFailureEvent implements ThirdPartyLoggable
         private array   $payload = [],
         private ?string $error = null,
         private array   $tags = [],
-    ) {}
+    ) {
+    }
 
     public function getServiceName(): string
     {

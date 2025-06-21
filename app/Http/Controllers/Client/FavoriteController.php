@@ -12,7 +12,8 @@ class FavoriteController extends BaseController
 {
     public function __construct(
         protected ProductService $service
-    ) {}
+    ) {
+    }
 
     /**
      * @OA\Get(
