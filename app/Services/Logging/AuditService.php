@@ -3,30 +3,50 @@
 namespace App\Services\Logging;
 
 use App\Enums\AuditAction;
+use App\Models\Client;
+use App\Models\User;
 use App\Repositories\AuditLogRepository;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Database\Eloquent\Model;
 
-class AuditService
+readonly class AuditService
 {
     public function __construct(
-        protected AuditLogRepository $repository
-    ) {
+        private AuditLogRepository $repository
+    )
+    {
     }
 
+    /**
+     * @param AuditAction $action
+     * @param Model|null $target
+     * @param array $before
+     * @param array $after
+     * @param array $metadata
+     * @return void
+     */
     public function log(
         AuditAction $action,
-        array $data = [],
-        ?int $clientId = null,
-        ?int $userId = null,
-        ?string $ip = null
-    ): void {
+        ?Model      $target = null,
+        array       $before = [],
+        array       $after = [],
+        array       $metadata = []
+    ): void
+    {
+
+        /** @var Model $actor */
+        $actor = auth('api')->user() ?? auth('sanctum')->user();
         $this->repository->create([
-            'action'     => $action->value,
-            'data'       => json_encode($data),
-            'ip_address' => $ip ?? Request::ip(),
-            'client_id'  => $clientId ?? optional(Auth::guard('api')->user())->id,
-            'user_id'    => $userId ?? optional(Auth::guard('sanctum')->user())->id,
+            'actor_id' => $actor->getKey(),
+            'actor_type' => $actor::class,
+
+            'target_id' => $target?->getKey(),
+            'target_type' => $target ? $target::class: null,
+
+            'action' => $action->value,
+            'before' => !empty($before) ? json_encode($before, JSON_UNESCAPED_UNICODE) : null,
+            'after' => !empty($after) ? json_encode($after, JSON_UNESCAPED_UNICODE) : null,
+            'metadata' => !empty($metadata) ? json_encode($metadata, JSON_UNESCAPED_UNICODE) : null,
         ]);
     }
+
 }

@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Enums\AuditAction;
+use App\Models\Client;
+use App\Models\Favorite;
+use App\Models\User;
 use App\Repositories\FavoriteRepository;
 use App\Services\Cache\ProductCacheService;
 use App\Services\External\ThirdPartyProductsClient;
@@ -14,8 +17,9 @@ class ProductService
         protected ThirdPartyProductsClient $external,
         protected FavoriteRepository       $repository,
         protected ProductCacheService      $cache,
-        protected AuditService      $audit,
-    ) {
+        protected AuditService             $audit,
+    )
+    {
     }
 
     public function getAll(): array
@@ -27,17 +31,6 @@ class ProductService
     {
         return $this->external->getProductById($id);
     }
-
-    public function update(int $id, array $data): ?array
-    {
-        return $this->external->updateProduct($id, $data);
-    }
-
-    public function delete(int $id): bool
-    {
-        return $this->external->deleteProduct($id);
-    }
-
 
     /**
      */
@@ -55,7 +48,7 @@ class ProductService
             foreach ($favorites as $productId => $favorite) {
                 $product = $this->cache->getProductFromCache(
                     $productId,
-                    fn () => $this->external->getProductById($productId)
+                    fn() => $this->external->getProductById($productId)
                 );
 
                 if ($product) {
@@ -67,66 +60,46 @@ class ProductService
         });
     }
 
-    /**
-     */
-    public function incrementFavorite(int $clientId, int $productId): ?array
+
+    public function addFavorite(int $clientId, int $productId): ?array
     {
         $product = $this->external->getProductById($productId);
+        if (!$product) return null;
 
-        if (!$product) {
-            return null;
-        }
+        $alreadyExists = $this->repository->getOne($clientId, $productId);
+        if ($alreadyExists) return null;
 
-        $existing = $this->repository->getOne($clientId, $productId);
-        $before = $existing?->toArray();
-
-        $favorite = $this->repository->incrementOrCreate($clientId, $productId);
+        $favorite = $this->repository->create(['client_id' => $clientId, 'product_id' => $productId]);
 
         $this->cache->clearFavoritesCache($clientId);
 
         $this->audit->log(
-            action:  empty($before) ? AuditAction::ADD_FAVORITE_PRODUCT : AuditAction::EDIT_FAVORITE_PRODUCT,
-            data: [
-                'product_id' => $productId,
-                'before'     => $before,
-                'after'      => $favorite->toArray()
-            ],
-            clientId: $clientId
+            action: AuditAction::ADD_FAVORITE_PRODUCT,
+            target: $favorite,
+            before: [],
+            after: $favorite->toArray(),
+            metadata: ['product_id' => $productId]
         );
 
-        return array_merge(
-            $product,
-            ['quantity' => $favorite->quantity]
-        );
+        return $product;
     }
 
-    /**
-     */
-    public function decrementFavorite(int $clientId, int $productId): bool
+    public function removeFavorite(int $clientId, int $productId): bool
     {
-        $before = $this->repository->getByClientId($clientId)
-            ->firstWhere('product_id', $productId);
+        $favorite = $this->repository->getOne($clientId, $productId);
+        if (!$favorite) return false;
 
-        $success = $this->repository->decrementOrDelete($clientId, $productId);
+        $before = $favorite->toArray();
+        $this->repository->delete($favorite);
+        $this->cache->clearFavoritesCache($clientId);
 
-        if ($success) {
-            $this->cache->clearFavoritesCache($clientId);
-
-            $this->audit->log(
-                action: $before?->quantity === 1
-                    ? AuditAction::REMOVED_FAVORITE_PRODUCT
-                    : AuditAction::EDIT_FAVORITE_PRODUCT,
-                data: [
-                    'product_id' => $productId,
-                    'before'     => $before?->toArray(),
-                    'after'      => null,
-                ],
-                clientId: $clientId
-            );
-        }
-
-        return $success;
+        $this->audit->log(
+            action: AuditAction::REMOVED_FAVORITE_PRODUCT,
+            target: $favorite,
+            before: $before,
+            after: [],
+            metadata: ['product_id' => $productId]
+        );
+         return true;
     }
-
-
 }

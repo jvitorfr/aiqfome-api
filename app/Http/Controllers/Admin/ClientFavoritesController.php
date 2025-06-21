@@ -77,10 +77,10 @@ class ClientFavoritesController extends BaseController
     {
         $request->validate(['product_id' => 'required|integer']);
 
-        $result = $this->service->incrementFavorite($client->id, $request->product_id);
+        $result = $this->service->addFavorite($client->id, $request->product_id);
 
         return $result
-            ? $this->respondSuccess($result)
+            ? $this->respondMessage("Produto Favoritado com sucesso")
             : $this->respondError('Produto inválido', 422);
     }
 
@@ -118,10 +118,10 @@ class ClientFavoritesController extends BaseController
     {
         $request->validate(['product_id' => 'required|integer']);
 
-        $success = $this->service->decrementFavorite($client->id, $request->product_id);
+        $success = $this->service->removeFavorite($client->id, $request->product_id);
 
         return $success
-            ? $this->respondMessage('Quantidade atualizada/removida')
+            ? $this->respondMessage('Favorito removido')
             : $this->respondError('Favorito não encontrado', 404);
     }
 }

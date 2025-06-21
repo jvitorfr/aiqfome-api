@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedInteger('quantity')->default(1);
             $table->timestamps();
             $table->unique(['client_id', 'product_id']);
         });

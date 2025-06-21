@@ -2,15 +2,18 @@
 
 namespace App\Services;
 
+use App\Enums\AuditAction;
 use App\Models\Client;
 use App\Repositories\ClientRepository;
+use App\Services\Logging\AuditService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 
 readonly class ClientService
 {
     public function __construct(
-        private ClientRepository $repository
+        private ClientRepository $repository,
+        protected AuditService $audit,
     ) {
     }
 
@@ -40,18 +43,44 @@ readonly class ClientService
     public function create(array $data): Model|Client
     {
         $data['password'] = bcrypt($data['password']);
-        return $this->repository->create($data);
+
+        /** @var Client $client */
+        $client = $this->repository->create($data);
+
+        $this->audit->log(
+            action: AuditAction::CREATED_CLIENT,
+            target: $client,
+            after: $client->toArray()
+        );
+
+        return $client;
     }
 
     /**
      */
     public function update(Client $client, array $data): Model|Client
     {
-        return $this->repository->update($client, $data);
+        $beforeClient = $client->toArray();
+        $client = $this->repository->update($client, $data);
+
+        $this->audit->log(
+            action: AuditAction::EDITED_CLIENT,
+            target: $client,
+            before: $beforeClient,
+            after: $client->toArray()
+        );
+
+        return $client;
     }
 
     public function delete(Client $client): void
     {
         $this->repository->delete($client);
+        $this->audit->log(
+            action: AuditAction::DELETED_CLIENT,
+            target: $client,
+            before: $client->toArray(),
+            after: $client->toArray()
+        );
     }
 }

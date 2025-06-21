@@ -61,44 +61,4 @@ readonly class ThirdPartyProductsClient
         return [];
     }
 
-    public function updateProduct(int $id, array $data): ?array
-    {
-        try {
-            $response = $this->http->request('PUT', "/products/{$id}", [
-                'json' => $data,
-            ]);
-
-            if ($response->getStatusCode() === 200) {
-                return $response->toArray();
-            }
-        } catch (Throwable $e) {
-            ThirdPartyLogger::warning('Erro em updateProduct', new ThirdPartyFailureEvent(
-                service: 'FakeStore',
-                action: 'updateProduct',
-                payload: ['product_id' => $id, 'data' => $data],
-                error: $e->getMessage(),
-                tags: ['product', 'update']
-            ));
-        }
-
-        return null;
-    }
-
-    public function deleteProduct(int $id): bool
-    {
-        try {
-            $response = $this->http->request('DELETE', "/products/{$id}");
-            return $response->getStatusCode() === 200;
-        } catch (Throwable $e) {
-            ThirdPartyLogger::warning('Erro em deleteProduct', new ThirdPartyFailureEvent(
-                service: 'FakeStore',
-                action: 'deleteProduct',
-                payload: ['product_id' => $id],
-                error: $e->getMessage(),
-                tags: ['product', 'delete']
-            ));
-        }
-
-        return false;
-    }
 }

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $client_id
  * @property int $product_id
- * @property int $quantity
  */
 class Favorite extends Model
 {
