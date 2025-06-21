@@ -77,6 +77,22 @@ return [
             'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
         ],
 
+
+        'stores' => [
+
+            'redis' => [
+                'driver' => 'redis',
+                'connection' => 'default',
+            ],
+
+        ],
+
+        'default' => env('CACHE_DRIVER', 'file'),
+
+
+        'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
+
+
         'dynamodb' => [
             'driver' => 'dynamodb',
             'key' => env('AWS_ACCESS_KEY_ID'),

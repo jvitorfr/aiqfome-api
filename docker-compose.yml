@@ -31,6 +31,14 @@ services:
     networks:
       - aiqfome-network
 
+  redis:
+      image: redis:7
+      container_name: aiqfome-api-redis
+      ports:
+          - "6379:6379"
+      volumes:
+          - redis-data:/data
+      restart: unless-stopped
   db:
     image: postgres:15
     container_name: aiqfome-db

@@ -17,6 +17,14 @@ readonly class FavoriteRepository extends BaseRepository
         return $this->where('client_id', $clientId)->get();
     }
 
+    public function getOne(int $clientId, int $productId): ?Favorite
+    {
+        return $this->query()
+            ->where('client_id', $clientId)
+            ->where('product_id', $productId)
+            ->first();
+    }
+
     public function exists(int $clientId, int $productId): bool
     {
         return $this->where('client_id', $clientId)
