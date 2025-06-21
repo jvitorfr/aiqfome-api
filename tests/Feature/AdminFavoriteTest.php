@@ -3,9 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Client;
-use App\Models\User;
 use App\Models\Favorite;
-use App\Services\Enums\AuditAction;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -42,13 +41,13 @@ class AdminFavoriteTest extends TestCase
 
         $this->client = Client::factory()->create();
 
-          $auth = $this->postJson('/api/admin/login', [
-            'email' => 'admin@aiqfome.com',
-            'password' => 'senhaSegura123',
+        $auth = $this->postJson('/api/admin/login', [
+          'email' => 'admin@aiqfome.com',
+          'password' => 'senhaSegura123',
         ])->json();
 
-    $this->token = $auth['data']['token'];
-    $this->actingAs(User::where('email', 'admin@aiqfome.com')->first(), 'sanctum');
+        $this->token = $auth['data']['token'];
+        $this->actingAs(User::where('email', 'admin@aiqfome.com')->first(), 'sanctum');
 
     }
 
@@ -80,7 +79,7 @@ class AdminFavoriteTest extends TestCase
         ], [
             'Authorization' => "Bearer {$this->token}"
         ]);
-        
+
         $response->assertOk();
 
         $this->assertDatabaseMissing('favorites', [
@@ -89,7 +88,7 @@ class AdminFavoriteTest extends TestCase
         ]);
     }
 
-    public function test_admin_cannot_add_invalid_product()
+    public function test_admin_cannot_add_invalid_product_unprocessable()
     {
         Http::fake([
             'https://fakestoreapi.com/products/9999' => Http::response([], 404)
@@ -102,5 +101,54 @@ class AdminFavoriteTest extends TestCase
         ]);
 
         $response->assertUnprocessable();
+    }
+
+    public function test_admin_removing_nonexistent_favorite_does_not_fail(): void
+    {
+        $response = $this->postJson("/api/admin/clients/{$this->client->id}/favorites/minus", [
+            'product_id' => 9999,
+        ], [
+            'Authorization' => "Bearer {$this->token}"
+        ]);
+
+        $response->assertStatus(404);
+        $this->assertDatabaseMissing('favorites', [
+            'client_id' => $this->client->id,
+            'product_id' => 9999,
+        ]);
+    }
+
+    public function test_admin_cannot_add_duplicate_favorite(): void
+    {
+
+        $this->postJson("/api/admin/clients/{$this->client->id}/favorites/plus", [
+            'product_id' => 1,
+        ], [
+            'Authorization' => "Bearer {$this->token}"
+        ]);
+
+        $response = $this->postJson("/api/admin/clients/{$this->client->id}/favorites/plus", [
+            'product_id' => 1,
+        ], [
+            'Authorization' => "Bearer {$this->token}"
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertDatabaseCount('favorites', 1);
+    }
+
+    public function test_admin_cannot_add_invalid_product(): void
+    {
+        $response = $this->postJson("/api/admin/clients/{$this->client->id}/favorites/plus", [
+            'product_id' => 999999,
+        ], [
+            'Authorization' => "Bearer {$this->token}"
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertDatabaseMissing('favorites', [
+            'client_id' => $this->client->id,
+            'product_id' => 999999,
+        ]);
     }
 }
