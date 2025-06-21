@@ -23,11 +23,14 @@ class AuditLog extends Model
     protected $table = 'audit_logs';
 
     protected $fillable = [
+        'actor_id',
+        'actor_type',
+        'target_id',
+        'target_type',
         'action',
-        'data',
-        'ip_address',
-        'client_id',
-        'user_id',
+        'before',
+        'after',
+        'metadata',
     ];
 
     protected $casts = [

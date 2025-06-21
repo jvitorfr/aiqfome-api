@@ -24,7 +24,14 @@ readonly class AuditService
     ): void {
 
         /** @var Model $actor */
-        $actor = auth('api')->user() ?? auth('sanctum')->user();
+        $actor = auth('sanctum')->user()
+            ?? auth('api')->user()
+            ?? auth()->user();
+
+        if (!$actor) {
+            return;
+        }
+
         $this->repository->create([
             'actor_id' => $actor->getKey(),
             'actor_type' => $actor::class,
