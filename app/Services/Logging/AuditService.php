@@ -3,8 +3,6 @@
 namespace App\Services\Logging;
 
 use App\Enums\AuditAction;
-use App\Models\Client;
-use App\Models\User;
 use App\Repositories\AuditLogRepository;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,17 +10,10 @@ readonly class AuditService
 {
     public function __construct(
         private AuditLogRepository $repository
-    )
-    {
+    ) {
     }
 
     /**
-     * @param AuditAction $action
-     * @param Model|null $target
-     * @param array $before
-     * @param array $after
-     * @param array $metadata
-     * @return void
      */
     public function log(
         AuditAction $action,
@@ -30,8 +21,7 @@ readonly class AuditService
         array       $before = [],
         array       $after = [],
         array       $metadata = []
-    ): void
-    {
+    ): void {
 
         /** @var Model $actor */
         $actor = auth('api')->user() ?? auth('sanctum')->user();
@@ -40,7 +30,7 @@ readonly class AuditService
             'actor_type' => $actor::class,
 
             'target_id' => $target?->getKey(),
-            'target_type' => $target ? $target::class: null,
+            'target_type' => $target ? $target::class : null,
 
             'action' => $action->value,
             'before' => !empty($before) ? json_encode($before, JSON_UNESCAPED_UNICODE) : null,

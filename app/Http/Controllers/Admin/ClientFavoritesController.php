@@ -80,7 +80,7 @@ class ClientFavoritesController extends BaseController
         $result = $this->service->addFavorite($client->id, $request->product_id);
 
         return $result
-            ? $this->respondMessage("Produto Favoritado com sucesso")
+            ? $this->respondMessage('Produto Favoritado com sucesso')
             : $this->respondError('Produto inválido', 422);
     }
 

@@ -3,9 +3,6 @@
 namespace App\Services;
 
 use App\Enums\AuditAction;
-use App\Models\Client;
-use App\Models\Favorite;
-use App\Models\User;
 use App\Repositories\FavoriteRepository;
 use App\Services\Cache\ProductCacheService;
 use App\Services\External\ThirdPartyProductsClient;
@@ -18,8 +15,7 @@ class ProductService
         protected FavoriteRepository       $repository,
         protected ProductCacheService      $cache,
         protected AuditService             $audit,
-    )
-    {
+    ) {
     }
 
     public function getAll(): array
@@ -48,7 +44,7 @@ class ProductService
             foreach ($favorites as $productId => $favorite) {
                 $product = $this->cache->getProductFromCache(
                     $productId,
-                    fn() => $this->external->getProductById($productId)
+                    fn () => $this->external->getProductById($productId)
                 );
 
                 if ($product) {
@@ -64,10 +60,14 @@ class ProductService
     public function addFavorite(int $clientId, int $productId): ?array
     {
         $product = $this->external->getProductById($productId);
-        if (!$product) return null;
+        if (!$product) {
+            return null;
+        }
 
         $alreadyExists = $this->repository->getOne($clientId, $productId);
-        if ($alreadyExists) return null;
+        if ($alreadyExists) {
+            return null;
+        }
 
         $favorite = $this->repository->create(['client_id' => $clientId, 'product_id' => $productId]);
 
@@ -87,7 +87,9 @@ class ProductService
     public function removeFavorite(int $clientId, int $productId): bool
     {
         $favorite = $this->repository->getOne($clientId, $productId);
-        if (!$favorite) return false;
+        if (!$favorite) {
+            return false;
+        }
 
         $before = $favorite->toArray();
         $this->repository->delete($favorite);
@@ -100,6 +102,6 @@ class ProductService
             after: [],
             metadata: ['product_id' => $productId]
         );
-         return true;
+        return true;
     }
 }
