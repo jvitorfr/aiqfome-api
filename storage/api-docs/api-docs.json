@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API de Produtos Favoritos",
+        "title": "aiqfome API",
         "description": "Documentação da API RESTful para o desafio técnico do aiqfome.",
         "version": "1.0.0"
     },
@@ -12,16 +12,121 @@
         }
     ],
     "paths": {
-        "/api/admin/favorites/{clientId}": {
+        "/api/admin/login": {
+            "post": {
+                "tags": [
+                    "Autenticação para administradores"
+                ],
+                "summary": "Login do usuário do sistema (admin)",
+                "operationId": "a620445144edea33b556701c4992bf2d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login bem-sucedido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
+        "/api/admin/logout": {
+            "post": {
+                "tags": [
+                    "Autenticação para administradores"
+                ],
+                "summary": "Logout do usuário do sistema",
+                "operationId": "349229082869864eb8dc6d036d20fd13",
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/me": {
             "get": {
                 "tags": [
-                    "Admin - Favorites"
+                    "Autenticação para administradores"
+                ],
+                "summary": "Retorna o usuário autenticado (admin)",
+                "operationId": "6c74382739bd0651745b99732f1ffd12",
+                "responses": {
+                    "200": {
+                        "description": "Dados do usuário autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/clients/{client}/favorites": {
+            "get": {
+                "tags": [
+                    "Admin - Gerenciar produtos dos clientes"
                 ],
                 "summary": "Lista os produtos favoritos de um cliente (admin)",
-                "operationId": "084b4a2f387e5876762e09079eda9775",
+                "operationId": "86071c3f93c3a6a41b05ce18cc3cefaa",
                 "parameters": [
                     {
-                        "name": "clientId",
+                        "name": "client",
                         "in": "path",
                         "description": "ID do cliente",
                         "required": true,
@@ -47,7 +152,118 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/clients/{client}/favorites/plus": {
+            "post": {
+                "tags": [
+                    "Admin - Gerenciar produtos dos clientes"
+                ],
+                "summary": "Adiciona/incrementa produto nos favoritos de um cliente (admin)",
+                "operationId": "55f614f13c67813b5b7f110a28391d61",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_id"
+                                ],
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Produto adicionado ou incrementado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Produto inválido"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/clients/{client}/favorites/minus": {
+            "post": {
+                "tags": [
+                    "Admin - Gerenciar produtos dos clientes"
+                ],
+                "summary": "Remove/decrementa produto dos favoritos de um cliente (admin)",
+                "operationId": "39fc21cd5b5f484b8309a78864077799",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_id"
+                                ],
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quantidade atualizada ou item removido"
+                    },
+                    "404": {
+                        "description": "Favorito não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
                     }
                 ]
             }
@@ -55,10 +271,10 @@
         "/api/client/register": {
             "post": {
                 "tags": [
-                    "Auth - Client"
+                    "Autenticação para clientes"
                 ],
                 "summary": "Registra um novo cliente",
-                "operationId": "8351fa64e73547c72ea44d3cc94b256b",
+                "operationId": "813e1dde22297e49233b3adc3c83b247",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -112,10 +328,10 @@
         "/api/client/login": {
             "post": {
                 "tags": [
-                    "Auth - Client"
+                    "Autenticação para clientes"
                 ],
                 "summary": "Autentica um cliente",
-                "operationId": "c0deeda73de83424e4ff6911539d8645",
+                "operationId": "02f9cfceca8a979abe3e72b6b042e006",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -168,10 +384,10 @@
         "/api/client/me": {
             "get": {
                 "tags": [
-                    "Auth - Client"
+                    "Autenticação para clientes"
                 ],
                 "summary": "Retorna o cliente autenticado",
-                "operationId": "d4fd015cd38fa44c5a33ed7bd40a7bde",
+                "operationId": "3bc06c226f1f7945f7db0ebec15e96ee",
                 "responses": {
                     "200": {
                         "description": "Dados do cliente",
@@ -197,118 +413,13 @@
         "/api/client/logout": {
             "post": {
                 "tags": [
-                    "Auth - Client"
+                    "Autenticação para clientes"
                 ],
                 "summary": "Realiza logout do cliente",
-                "operationId": "31d0941ee304ecfc80621ceaf0badc27",
+                "operationId": "557cb73adfe47ce580f30f1a72e05bca",
                 "responses": {
                     "200": {
                         "description": "Logout realizado com sucesso"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/user/login": {
-            "post": {
-                "tags": [
-                    "Auth - User"
-                ],
-                "summary": "Login do usuário do sistema (admin)",
-                "operationId": "b9a6a8b44a0c416a582473741334da81",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "minLength": 8
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Login bem-sucedido",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "token": {
-                                            "type": "string"
-                                        },
-                                        "user": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Credenciais inválidas"
-                    }
-                }
-            }
-        },
-        "/api/user/logout": {
-            "post": {
-                "tags": [
-                    "Auth - User"
-                ],
-                "summary": "Logout do usuário do sistema",
-                "operationId": "1a0569d743575459b9a86160adfb0c5f",
-                "responses": {
-                    "200": {
-                        "description": "Logout realizado com sucesso"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/user/me": {
-            "get": {
-                "tags": [
-                    "Auth - User"
-                ],
-                "summary": "Retorna o usuário autenticado (admin)",
-                "operationId": "025e25a08b9a35616e8c4b54123cb620",
-                "responses": {
-                    "200": {
-                        "description": "Dados do usuário autenticado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Não autenticado"
                     }
                 },
                 "security": [
@@ -321,7 +432,7 @@
         "/api/client/favorites": {
             "get": {
                 "tags": [
-                    "Favorites"
+                    "Cliente - Produtos favoritos"
                 ],
                 "summary": "Lista os produtos favoritos do client autenticado",
                 "operationId": "3cccbe20bdf560a161cba36c66b7c31d",
@@ -350,7 +461,7 @@
         "/api/client/favorites/plus": {
             "post": {
                 "tags": [
-                    "Favorites"
+                    "Cliente - Produtos favoritos"
                 ],
                 "summary": "Incrementa (ou cria) um produto favorito",
                 "operationId": "1eb68702082e3ca2a126b599130bd27e",
@@ -397,7 +508,7 @@
         "/api/client/favorites/minus": {
             "post": {
                 "tags": [
-                    "Favorites"
+                    "Cliente - Produtos favoritos"
                 ],
                 "summary": "Decrementa ou remove um favorito",
                 "operationId": "a0a223f2e8a121d69c1d5bd3d3e767d7",
@@ -437,7 +548,7 @@
         "/api/client/products": {
             "get": {
                 "tags": [
-                    "Products"
+                    "Cliente - Produtos (FAKESTORE)"
                 ],
                 "summary": "Lista todos os produtos da FakeStore",
                 "operationId": "0378717e8e1da3ae3e602fc68549ca46",
@@ -488,7 +599,7 @@
         "/api/client/products/{id}": {
             "get": {
                 "tags": [
-                    "Products"
+                    "Cliente - Produtos (FAKESTORE)"
                 ],
                 "summary": "Busca um produto por ID",
                 "operationId": "79ae799ec8de014fe7e3f0051e632a29",
@@ -548,7 +659,7 @@
             },
             "put": {
                 "tags": [
-                    "Products"
+                    "Cliente - Produtos (FAKESTORE)"
                 ],
                 "summary": "Atualiza um produto via FakeStore API",
                 "operationId": "5c7c04e984a801d63ea62fc17a49640b",
@@ -608,7 +719,7 @@
             },
             "delete": {
                 "tags": [
-                    "Products"
+                    "Cliente - Produtos (FAKESTORE)"
                 ],
                 "summary": "Remove um produto via FakeStore API",
                 "operationId": "de4684b1798f0a46e809cd8f51b26759",
@@ -637,20 +748,6 @@
                     }
                 ]
             }
-        },
-        "/api/test-swagger": {
-            "get": {
-                "tags": [
-                    "Test"
-                ],
-                "summary": "Teste de documentação funcionando",
-                "operationId": "4c92f594a6409c28dfdd6f08243325f1",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
         }
     },
     "components": {
@@ -664,28 +761,24 @@
     },
     "tags": [
         {
-            "name": "Admin - Favorites",
-            "description": "Admin - Favorites"
+            "name": "Autenticação para administradores",
+            "description": "Autenticação para administradores"
         },
         {
-            "name": "Auth - Client",
-            "description": "Auth - Client"
+            "name": "Admin - Gerenciar produtos dos clientes",
+            "description": "Admin - Gerenciar produtos dos clientes"
         },
         {
-            "name": "Auth - User",
-            "description": "Auth - User"
+            "name": "Autenticação para clientes",
+            "description": "Autenticação para clientes"
         },
         {
-            "name": "Favorites",
-            "description": "Favorites"
+            "name": "Cliente - Produtos favoritos",
+            "description": "Cliente - Produtos favoritos"
         },
         {
-            "name": "Products",
-            "description": "Products"
-        },
-        {
-            "name": "Test",
-            "description": "Test"
+            "name": "Cliente - Produtos (FAKESTORE)",
+            "description": "Cliente - Produtos (FAKESTORE)"
         }
     ]
 }

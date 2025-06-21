@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 /**
  * @OA\Info(
- *     title="API de Produtos Favoritos",
+ *     title="aiqfome API",
  *     version="1.0.0",
  *     description="Documentação da API RESTful para o desafio técnico do aiqfome."
  * )

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\BaseController;
 use App\Services\ClientService;
@@ -18,7 +18,7 @@ class AuthClientController extends BaseController
      * @OA\Post(
      *     path="/api/client/register",
      *     summary="Registra um novo cliente",
-     *     tags={"Auth - Client"},
+     *     tags={"Autenticação para clientes"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -60,7 +60,7 @@ class AuthClientController extends BaseController
      * @OA\Post(
      *     path="/api/client/login",
      *     summary="Autentica um cliente",
-     *     tags={"Auth - Client"},
+     *     tags={"Autenticação para clientes"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -104,7 +104,7 @@ class AuthClientController extends BaseController
      * @OA\Get(
      *     path="/api/client/me",
      *     summary="Retorna o cliente autenticado",
-     *     tags={"Auth - Client"},
+     *     tags={"Autenticação para clientes"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
@@ -132,7 +132,7 @@ class AuthClientController extends BaseController
      * @OA\Post(
      *     path="/api/client/logout",
      *     summary="Realiza logout do cliente",
-     *     tags={"Auth - Client"},
+     *     tags={"Autenticação para clientes"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,

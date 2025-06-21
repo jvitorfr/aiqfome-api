@@ -17,7 +17,7 @@ class ProductController extends BaseController
      * @OA\Get(
      *     path="/api/client/products",
      *     summary="Lista todos os produtos da FakeStore",
-     *     tags={"Products"},
+     *     tags={"Cliente - Produtos (FAKESTORE)"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
@@ -43,7 +43,7 @@ class ProductController extends BaseController
      * @OA\Get(
      *     path="/api/client/products/{id}",
      *     summary="Busca um produto por ID",
-     *     tags={"Products"},
+     *     tags={"Cliente - Produtos (FAKESTORE)"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -85,7 +85,7 @@ class ProductController extends BaseController
      * @OA\Put(
      *     path="/api/client/products/{id}",
      *     summary="Atualiza um produto via FakeStore API",
-     *     tags={"Products"},
+     *     tags={"Cliente - Produtos (FAKESTORE)"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -129,7 +129,7 @@ class ProductController extends BaseController
      * @OA\Delete(
      *     path="/api/client/products/{id}",
      *     summary="Remove um produto via FakeStore API",
-     *     tags={"Products"},
+     *     tags={"Cliente - Produtos (FAKESTORE)"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",

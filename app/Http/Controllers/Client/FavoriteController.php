@@ -18,7 +18,7 @@ class FavoriteController extends BaseController
      * @OA\Get(
      *     path="/api/client/favorites",
      *     summary="Lista os produtos favoritos do client autenticado",
-     *     tags={"Favorites"},
+     *     tags={"Cliente - Produtos favoritos"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
@@ -39,7 +39,7 @@ class FavoriteController extends BaseController
      * @OA\Post(
      *     path="/api/client/favorites/plus",
      *     summary="Incrementa (ou cria) um produto favorito",
-     *     tags={"Favorites"},
+     *     tags={"Cliente - Produtos favoritos"},
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -75,7 +75,7 @@ class FavoriteController extends BaseController
      * @OA\Post(
      *     path="/api/client/favorites/minus",
      *     summary="Decrementa ou remove um favorito",
-     *     tags={"Favorites"},
+     *     tags={"Cliente - Produtos favoritos"},
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,

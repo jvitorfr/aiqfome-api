@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
-use App\Models\Client;
-use App\Services\ClientService;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Models\Client;
+use App\Services\ClientService;
 use Illuminate\Http\JsonResponse;
 
 class ClientController extends BaseController

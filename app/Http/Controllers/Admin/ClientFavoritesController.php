@@ -1,0 +1,126 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\BaseController;
+use App\Services\ProductService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use App\Models\Client;
+use OpenApi\Annotations as OA;
+
+class ClientFavoritesController extends BaseController
+{
+    public function __construct(
+        protected ProductService $service
+    ) {}
+
+    /**
+     * @OA\Get(
+     *     path="/api/admin/clients/{client}/favorites",
+     *     summary="Lista os produtos favoritos de um cliente (admin)",
+     *     tags={"Admin - Gerenciar produtos dos clientes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="client",
+     *         in="path",
+     *         required=true,
+     *         description="ID do cliente",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de favoritos",
+     *         @OA\JsonContent(type="array", @OA\Items(type="object"))
+     *     )
+     * )
+     */
+    public function index(Client $client): JsonResponse
+    {
+        $favorites = $this->service->getFavoritesByClientId($client->id);
+        return $this->respondSuccess($favorites);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/admin/clients/{client}/favorites/plus",
+     *     summary="Adiciona/incrementa produto nos favoritos de um cliente (admin)",
+     *     tags={"Admin - Gerenciar produtos dos clientes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="client",
+     *         in="path",
+     *         required=true,
+     *         description="ID do cliente",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_id"},
+     *             @OA\Property(property="product_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Produto adicionado ou incrementado",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Produto inválido"
+     *     )
+     * )
+     */
+    public function plus(Request $request, Client $client): JsonResponse
+    {
+        $request->validate(['product_id' => 'required|integer']);
+
+        $result = $this->service->incrementFavorite($client->id, $request->product_id);
+
+        return $result
+            ? $this->respondSuccess($result)
+            : $this->respondError('Produto inválido', 422);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/admin/clients/{client}/favorites/minus",
+     *     summary="Remove/decrementa produto dos favoritos de um cliente (admin)",
+     *     tags={"Admin - Gerenciar produtos dos clientes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="client",
+     *         in="path",
+     *         required=true,
+     *         description="ID do cliente",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_id"},
+     *             @OA\Property(property="product_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Quantidade atualizada ou item removido"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Favorito não encontrado"
+     *     )
+     * )
+     */
+    public function minus(Request $request, Client $client): JsonResponse
+    {
+        $request->validate(['product_id' => 'required|integer']);
+
+        $success = $this->service->decrementFavorite($client->id, $request->product_id);
+
+        return $success
+            ? $this->respondMessage('Quantidade atualizada/removida')
+            : $this->respondError('Favorito não encontrado', 404);
+    }
+}

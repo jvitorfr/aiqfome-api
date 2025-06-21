@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Http\JsonResponse;
 
 class AuthUserController extends BaseController
 {
@@ -18,9 +18,9 @@ class AuthUserController extends BaseController
     ) {}
     /**
      * @OA\Post(
-     *     path="/api/user/login",
+     *     path="/api/admin/login",
      *     summary="Login do usuário do sistema (admin)",
-     *     tags={"Auth - User"},
+     *     tags={"Autenticação para administradores"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -69,9 +69,9 @@ class AuthUserController extends BaseController
 
     /**
      * @OA\Post(
-     *     path="/api/user/logout",
+     *     path="/api/admin/logout",
      *     summary="Logout do usuário do sistema",
-     *     tags={"Auth - User"},
+     *     tags={"Autenticação para administradores"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
@@ -87,9 +87,9 @@ class AuthUserController extends BaseController
 
     /**
      * @OA\Get(
-     *     path="/api/user/me",
+     *     path="/api/admin/me",
      *     summary="Retorna o usuário autenticado (admin)",
-     *     tags={"Auth - User"},
+     *     tags={"Autenticação para administradores"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
