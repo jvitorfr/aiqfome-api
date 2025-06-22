@@ -72,3 +72,4 @@ networks:
 volumes:
   pgdata:
   pgsql_testing_data:
+  redis-data:

@@ -44,8 +44,8 @@ class ClientFavoritesController extends BaseController
 
     /**
      * @OA\Post(
-     *     path="/api/admin/clients/{client}/favorites/plus",
-     *     summary="Adiciona/incrementa produto nos favoritos de um cliente (admin)",
+     *     path="/api/admin/clients/{client}/favorites",
+     *     summary="Adiciona um produto aos favoritos de um cliente (admin)",
      *     tags={"Admin - Gerenciar produtos dos clientes"},
      *     security={{"sanctum":{}}},
      *     @OA\Parameter(
@@ -64,30 +64,30 @@ class ClientFavoritesController extends BaseController
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Produto adicionado ou incrementado",
+     *         description="Produto favoritado com sucesso",
      *         @OA\JsonContent(type="object")
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Produto inválido"
+     *         description="Produto inválido ou já favoritado"
      *     )
      * )
      */
-    public function plus(Request $request, Client $client): JsonResponse
+    public function store(Request $request, Client $client): JsonResponse
     {
         $request->validate(['product_id' => 'required|integer']);
 
         $result = $this->service->addFavorite($client->id, $request->product_id);
 
         return $result
-            ? $this->respondMessage('Produto Favoritado com sucesso')
-            : $this->respondError('Produto inválido', 422);
+            ? $this->respondMessage('Produto favoritado com sucesso')
+            : $this->respondError('Produto inválido ou já favoritado', 404);
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/admin/clients/{client}/favorites/minus",
-     *     summary="Remove/decrementa produto dos favoritos de um cliente (admin)",
+     * @OA\Delete(
+     *     path="/api/admin/clients/{client}/favorites/{product}",
+     *     summary="Remove um produto dos favoritos de um cliente (admin)",
      *     tags={"Admin - Gerenciar produtos dos clientes"},
      *     security={{"sanctum":{}}},
      *     @OA\Parameter(
@@ -97,16 +97,16 @@ class ClientFavoritesController extends BaseController
      *         description="ID do cliente",
      *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="product",
+     *         in="path",
      *         required=true,
-     *         @OA\JsonContent(
-     *             required={"product_id"},
-     *             @OA\Property(property="product_id", type="integer", example=1)
-     *         )
+     *         description="ID do produto a ser removido",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Quantidade atualizada ou item removido"
+     *         description="Favorito removido com sucesso"
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -114,14 +114,12 @@ class ClientFavoritesController extends BaseController
      *     )
      * )
      */
-    public function minus(Request $request, Client $client): JsonResponse
+    public function destroy(Client $client, int $product): JsonResponse
     {
-        $request->validate(['product_id' => 'required|integer']);
-
-        $success = $this->service->removeFavorite($client->id, $request->product_id);
+        $success = $this->service->removeFavorite($client->id, $product);
 
         return $success
-            ? $this->respondMessage('Favorito removido')
+            ? $this->respondMessage('Favorito removido com sucesso')
             : $this->respondError('Favorito não encontrado', 404);
     }
 }

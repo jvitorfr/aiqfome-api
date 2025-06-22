@@ -456,15 +456,13 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/api/client/favorites/plus": {
+            },
             "post": {
                 "tags": [
                     "Cliente - Produtos favoritos"
                 ],
                 "summary": "Incrementa (ou cria) um produto favorito",
-                "operationId": "1eb68702082e3ca2a126b599130bd27e",
+                "operationId": "603c049cf3cc89b283dc5cdd8a5d7530",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -503,15 +501,13 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/api/client/favorites/minus": {
-            "post": {
+            },
+            "delete": {
                 "tags": [
                     "Cliente - Produtos favoritos"
                 ],
                 "summary": "Decrementa ou remove um favorito",
-                "operationId": "a0a223f2e8a121d69c1d5bd3d3e767d7",
+                "operationId": "d512c625d4cd55d61238d55e6dfe629a",
                 "requestBody": {
                     "required": true,
                     "content": {

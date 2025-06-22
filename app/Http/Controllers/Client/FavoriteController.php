@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Client;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class FavoriteController extends BaseController
 
     /**
      * @OA\Post(
-     *     path="/api/client/favorites/plus",
+     *     path="/api/client/favorites",
      *     summary="Incrementa (ou cria) um produto favorito",
      *     tags={"Cliente - Produtos favoritos"},
      *     security={{"bearerAuth":{}}},
@@ -60,21 +61,20 @@ class FavoriteController extends BaseController
      *     )
      * )
      */
-    public function plus(Request $request): JsonResponse
+    public function store(Request $request, Client $client): JsonResponse
     {
         $request->validate(['product_id' => 'required|integer']);
-        $clientId = $request->user()->id;
 
-        $result = $this->service->incrementFavorite($clientId, $request->product_id);
+        $result = $this->service->addFavorite($client->id, $request->product_id);
 
         return $result
             ? $this->respondSuccess($result)
-            : $this->respondError('Produto inválido', 422);
+            : $this->respondError('Produto inválido ou duplicado', 422);
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/client/favorites/minus",
+     * @OA\Delete(
+     *     path="/api/client/favorites",
      *     summary="Decrementa ou remove um favorito",
      *     tags={"Cliente - Produtos favoritos"},
      *     security={{"bearerAuth":{}}},
@@ -95,15 +95,13 @@ class FavoriteController extends BaseController
      *     )
      * )
      */
-    public function minus(Request $request): JsonResponse
-    {
-        $request->validate(['product_id' => 'required|integer']);
-        $clientId = $request->user()->id;
 
-        $success = $this->service->decrementFavorite($clientId, $request->product_id);
+    public function destroy(Client $client, int $productId): JsonResponse
+    {
+        $success = $this->service->removeFavorite($client->id, $productId);
 
         return $success
-            ? $this->respondMessage('Quantidade atualizada/removida')
+            ? $this->respondMessage('Removido com sucesso')
             : $this->respondError('Favorito não encontrado', 404);
     }
 }
