@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Feature\Admin;
 
 use App\Models\Client;
 use App\Models\Favorite;

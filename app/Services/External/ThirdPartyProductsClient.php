@@ -2,8 +2,8 @@
 
 namespace App\Services\External;
 
+use App\Facades\ThirdPartyLogger;
 use App\Services\Logging\Events\ThirdPartyFailureEvent;
-use App\Services\Logging\ThirdPartyLogger;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;

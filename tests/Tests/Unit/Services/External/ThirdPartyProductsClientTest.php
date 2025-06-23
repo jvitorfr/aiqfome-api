@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Services\External;
 
+use App\Facades\ThirdPartyLogger;
 use App\Services\External\ThirdPartyProductsClient;
-use App\Services\Logging\ThirdPartyLogger;
 use Illuminate\Support\Facades\Facade;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -23,8 +23,7 @@ class ThirdPartyProductsClientTest extends TestCase
             ->with('GET', '/products/1')
             ->willReturn($mockResponse);
 
-        $client = new ThirdPartyProductsClient(baseUrl: 'http://fake.api');
-        $this->setPrivateProperty($client, 'http', $mockHttp); // injeta o mock no lugar
+        $client = new ThirdPartyProductsClient(baseUrl: 'http://fake.api', http: $mockHttp);
 
         $result = $client->getProductById(1);
 
@@ -34,10 +33,11 @@ class ThirdPartyProductsClientTest extends TestCase
 
     public function test_get_product_by_id_handles_exception_and_returns_null()
     {
-        // Seta o root app falso para permitir uso da Facade
         Facade::setFacadeApplication(app());
 
-        ThirdPartyLogger::shouldReceive('warning')->once();
+        \Mockery::mock('alias:' . ThirdPartyLogger::class)
+            ->shouldReceive('warning')
+            ->once();
 
         $mockHttp = $this->createMock(HttpClientInterface::class);
         $mockHttp->method('request')->willThrowException(new \Exception('Erro fake'));
@@ -57,21 +57,15 @@ class ThirdPartyProductsClientTest extends TestCase
         ]);
 
         $mockHttp = $this->createMock(HttpClientInterface::class);
-        $mockHttp->method('request')->with('GET', '/products')->willReturn($mockResponse);
+        $mockHttp->method('request')
+            ->with('GET', '/products')
+            ->willReturn($mockResponse);
 
-        $client = new ThirdPartyProductsClient(baseUrl: 'http://fake.api');
-        $this->setPrivateProperty($client, 'http', $mockHttp);
+        $client = new ThirdPartyProductsClient(baseUrl: 'http://fake.api', http: $mockHttp);
 
         $result = $client->getAll();
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
-    }
-
-    private function setPrivateProperty(object $object, string $property, mixed $value): void
-    {
-        $ref = new \ReflectionProperty($object, $property);
-        $ref->setAccessible(true);
-        $ref->setValue($object, $value);
     }
 }

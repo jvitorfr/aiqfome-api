@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Feature\Client;
 
 use App\Models\Client;
 use App\Services\ProductService;
@@ -15,7 +15,7 @@ class ProductControllerTest extends TestCase
     private function authHeaders(Client $client): array
     {
         $token = JWTAuth::fromUser($client);
-        return ['Authorization' => "Bearer {$token}"];
+        return ['Authorization' => "Bearer $token"];
     }
 
     public function test_client_can_list_products()
