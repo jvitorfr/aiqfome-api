@@ -15,13 +15,6 @@ readonly class AuditService
     }
 
     /**
-     * @param AuditAction $action
-     * @param Model|null $actor
-     * @param Model|null $target
-     * @param array $before
-     * @param array $after
-     * @param array $metadata
-     * @return AuditLog|null|Model
      */
     public function log(
         AuditAction $action,
@@ -30,8 +23,7 @@ readonly class AuditService
         array       $before = [],
         array       $after = [],
         array       $metadata = [],
-    ): AuditLog|Model|null
-    {
+    ): AuditLog|Model|null {
 
         if (is_null($actor)) {
             /** @var Model $actor */
@@ -44,18 +36,18 @@ readonly class AuditService
             return null;
         }
 
-       return $this->repository->create([
-            'actor_id' => $actor?->getKey() ?? null,
-            'actor_type' => $actor->getTable(),
+        return $this->repository->create([
+             'actor_id' => $actor?->getKey() ?? null,
+             'actor_type' => $actor->getTable(),
 
-            'target_id' => $target?->getKey(),
-            'target_type' => $target ? $target::class : null,
+             'target_id' => $target?->getKey(),
+             'target_type' => $target ? $target::class : null,
 
-            'action' => $action->value,
-            'before' => !empty($before) ? json_encode($before, JSON_UNESCAPED_UNICODE) : null,
-            'after' => !empty($after) ? json_encode($after, JSON_UNESCAPED_UNICODE) : null,
-            'metadata' => !empty($metadata) ? json_encode($metadata, JSON_UNESCAPED_UNICODE) : null,
-        ]);
+             'action' => $action->value,
+             'before' => !empty($before) ? json_encode($before, JSON_UNESCAPED_UNICODE) : null,
+             'after' => !empty($after) ? json_encode($after, JSON_UNESCAPED_UNICODE) : null,
+             'metadata' => !empty($metadata) ? json_encode($metadata, JSON_UNESCAPED_UNICODE) : null,
+         ]);
     }
 
 }

@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-
 class AuditLogEvent implements ShouldQueue
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public function __construct(
         public readonly AuditAction $action,
@@ -21,5 +22,6 @@ class AuditLogEvent implements ShouldQueue
         public readonly array $before = [],
         public readonly array $after = [],
         public readonly array $metadata = [],
-    ) {}
+    ) {
+    }
 }

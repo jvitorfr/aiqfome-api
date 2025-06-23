@@ -15,8 +15,7 @@ readonly class ClientService
     public function __construct(
         private IClientRepository $repository,
         protected AuditService    $audit,
-    )
-    {
+    ) {
     }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
@@ -57,10 +56,12 @@ readonly class ClientService
     {
         $beforeClient = $client->toArray();
         $client = $this->repository->update($client, $data);
-        event(new AuditLogEvent(action: AuditAction::EDITED_CLIENT,
+        event(new AuditLogEvent(
+            action: AuditAction::EDITED_CLIENT,
             target: $client,
             before: $beforeClient,
-            after: $client->toArray()));
+            after: $client->toArray()
+        ));
 
         return $client;
     }
@@ -72,6 +73,7 @@ readonly class ClientService
             action: AuditAction::DELETED_CLIENT,
             target: $client,
             before: $client->toArray(),
-            after: $client->toArray()));
+            after: $client->toArray()
+        ));
     }
 }

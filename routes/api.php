@@ -8,6 +8,11 @@ use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Client\ProductController;
 use Illuminate\Support\Facades\Route;
 
+
+
+Route::apiResource('products', ProductController::class)
+    ->only(['index', 'show']);
+
 Route::prefix('client')->group(function () {
     Route::post('login', [AuthClientController::class, 'login']);
     Route::post('register', [AuthClientController::class, 'register']);
@@ -16,8 +21,7 @@ Route::prefix('client')->group(function () {
         Route::get('me', [AuthClientController::class, 'me']);
         Route::post('logout', [AuthClientController::class, 'logout']);
 
-        Route::apiResource('products', ProductController::class)
-            ->only(['index', 'show', 'update', 'destroy']);
+
 
         Route::get('favorites', [FavoriteController::class, 'index']);
         Route::post('favorites', [FavoriteController::class, 'store']);
@@ -41,3 +45,4 @@ Route::prefix('admin')->group(function () {
         });
     });
 });
+

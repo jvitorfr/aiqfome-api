@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Client;
+use App\Services\ClientService;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,8 @@ use Throwable;
 class ClientFavoritesController extends BaseController
 {
     public function __construct(
-        protected ProductService $service
+        protected ProductService $service,
+        protected ClientService $clientService
     ) {
     }
 
@@ -22,7 +24,7 @@ class ClientFavoritesController extends BaseController
      *     path="/api/admin/clients/{client}/favorites",
      *     summary="Lista os produtos favoritos de um cliente (admin)",
      *     tags={"Admin - Gerenciar produtos dos clientes"},
-     *     security={{"sanctum":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="client",
      *         in="path",
@@ -37,8 +39,15 @@ class ClientFavoritesController extends BaseController
      *     )
      * )
      */
-    public function index(Client $client): JsonResponse
+    public function index(int $clientId): JsonResponse
     {
+
+        $client =  $this->clientService->find($clientId);
+
+        if (!$client) {
+            return $this->respondError('Cliente não encontrado', 404);
+        }
+
         $favorites = $this->service->getFavoritesByClientId($client->id);
         return $this->respondSuccess($favorites);
     }
@@ -48,7 +57,7 @@ class ClientFavoritesController extends BaseController
      *     path="/api/admin/clients/{client}/favorites",
      *     summary="Adiciona um produto aos favoritos de um cliente (admin)",
      *     tags={"Admin - Gerenciar produtos dos clientes"},
-     *     security={{"sanctum":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="client",
      *         in="path",
@@ -91,7 +100,7 @@ class ClientFavoritesController extends BaseController
      *     path="/api/admin/clients/{client}/favorites/{product}",
      *     summary="Remove um produto dos favoritos de um cliente (admin)",
      *     tags={"Admin - Gerenciar produtos dos clientes"},
-     *     security={{"sanctum":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="client",
      *         in="path",

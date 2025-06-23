@@ -3,14 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\AuditLogEvent;
-use App\Facades\ThirdPartyLogger;
 use App\Services\Logging\AuditService;
-use App\Services\Logging\Events\ThirdPartyFailureEvent;
-use Mockery\Exception;
 
 class AuditLogListener
 {
-    public function __construct(protected AuditService $auditService) {}
+    public function __construct(protected AuditService $auditService)
+    {
+    }
 
     public function handle(AuditLogEvent $event): void
     {

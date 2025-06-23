@@ -15,27 +15,29 @@ class ProductService
     public function __construct(
         protected ThirdPartyProductsClient $external,
         protected IFavoriteRepository       $repository,
-        protected ProductCacheService      $cache,
-        protected AuditService             $audit,
+        protected ProductCacheService       $cache,
+        protected AuditService              $audit,
     ) {
     }
 
     public function getAll(): array
     {
-        return $this->external->getAll();
+        return $this->cache->getAllProductsFromCache(function () {
+            return $this->external->getAll();
+        });
     }
 
     public function getById(int $id): ?array
     {
-        return $this->external->getProductById($id);
+        return $this->cache->getProductFromCache($id, function () use ($id) {
+            return $this->external->getProductById($id);
+        });
     }
 
-    /**
-     */
     public function getFavoritesByClientId(int $clientId): array
     {
         return $this->cache->getFavoritesFromCache($clientId, function () use ($clientId) {
-            $favorites = $this->repository->getByClientId($clientId)->keyBy('product_id');
+            $favorites = $this->repository->getByClientId($clientId);
 
             if ($favorites->isEmpty()) {
                 return [];
@@ -43,7 +45,7 @@ class ProductService
 
             $products = [];
 
-            foreach ($favorites as $productId => $favorite) {
+            foreach ($favorites->keyBy('product_id') as $productId => $favorite) {
                 $product = $this->cache->getProductFromCache(
                     $productId,
                     fn () => $this->external->getProductById($productId)
@@ -57,7 +59,6 @@ class ProductService
             return $products;
         });
     }
-
 
     /**
      * @throws Throwable

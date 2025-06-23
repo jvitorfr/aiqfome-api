@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AuditAction;
+use App\Events\AuditLogEvent;
 use App\Http\Controllers\BaseController;
-use App\Services\Logging\AuditService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Events\AuditLogEvent;
-use App\Enums\AuditAction;
 use Illuminate\Validation\ValidationException;
 
 class AuthUserController extends BaseController
@@ -97,7 +96,7 @@ class AuthUserController extends BaseController
     {
         $user = $request->user();
         $request->user()->tokens()->delete();
-        
+
         event(new AuditLogEvent(
             action: AuditAction::ADMIN_LOGOUT,
             actor: $user,

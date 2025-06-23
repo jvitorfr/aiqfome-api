@@ -152,7 +152,7 @@
                 },
                 "security": [
                     {
-                        "sanctum": []
+                        "bearerAuth": []
                     }
                 ]
             },
@@ -209,7 +209,7 @@
                 },
                 "security": [
                     {
-                        "sanctum": []
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -251,7 +251,7 @@
                 },
                 "security": [
                     {
-                        "sanctum": []
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -523,13 +523,13 @@
                 ]
             }
         },
-        "/api/client/products": {
+        "/api/products": {
             "get": {
                 "tags": [
                     "Cliente - Produtos (FAKESTORE)"
                 ],
                 "summary": "Lista todos os produtos da FakeStore",
-                "operationId": "0378717e8e1da3ae3e602fc68549ca46",
+                "operationId": "6d080b7a3156cac7ada7c31deec379d6",
                 "responses": {
                     "200": {
                         "description": "Lista de produtos",
@@ -566,21 +566,16 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
-        "/api/client/products/{id}": {
+        "/api/products/{id}": {
             "get": {
                 "tags": [
                     "Cliente - Produtos (FAKESTORE)"
                 ],
                 "summary": "Busca um produto por ID",
-                "operationId": "79ae799ec8de014fe7e3f0051e632a29",
+                "operationId": "1adabb70ef59ce921eddd682a8ccb725",
                 "parameters": [
                     {
                         "name": "id",
@@ -628,103 +623,7 @@
                     "404": {
                         "description": "Produto não encontrado"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Cliente - Produtos (FAKESTORE)"
-                ],
-                "summary": "Atualiza um produto via FakeStore API",
-                "operationId": "5c7c04e984a801d63ea62fc17a49640b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID do produto",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string"
-                                    },
-                                    "price": {
-                                        "type": "number",
-                                        "format": "float"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "category": {
-                                        "type": "string"
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "uri"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Produto atualizado com sucesso"
-                    },
-                    "400": {
-                        "description": "Erro ao atualizar produto"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Cliente - Produtos (FAKESTORE)"
-                ],
-                "summary": "Remove um produto via FakeStore API",
-                "operationId": "de4684b1798f0a46e809cd8f51b26759",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID do produto",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Produto removido com sucesso"
-                    },
-                    "400": {
-                        "description": "Falha ao remover produto"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         }
     },
