@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Facade;
 use Tests\TestCase;
 
 class ClientFavoritesControllerTest extends TestCase
@@ -83,6 +84,12 @@ class ClientFavoritesControllerTest extends TestCase
 
     public function test_favoriting_invalid_external_product_returns_404(): void
     {
+        Facade::setFacadeApplication(app());
+        \Mockery::mock('alias:App\Facades\ThirdPartyLogger')
+            ->shouldReceive('warning')
+            ->once()
+            ->andReturnNull();
+
         $client = Client::factory()->create();
         $response = $this->postJson("/api/admin/clients/$client->id/favorites", [
             'product_id' => 999999

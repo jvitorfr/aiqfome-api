@@ -14,6 +14,12 @@ readonly class AuditService
     }
 
     /**
+     * @param AuditAction $action
+     * @param Model|null $target
+     * @param array $before
+     * @param array $after
+     * @param array $metadata
+     * @return void
      */
     public function log(
         AuditAction $action,

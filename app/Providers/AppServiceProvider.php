@@ -20,9 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('thirdparty-logger', function () {
-            return new ThirdPartyLogger();
-        });
+        $this->app->singleton('thirdparty-logger', fn () => new ThirdPartyLogger());
         $this->app->bind(IAuditLogRepository::class, AuditLogRepository::class);
         $this->app->bind(IClientRepository::class, ClientRepository::class);
         $this->app->bind(IFavoriteRepository::class, FavoriteRepository::class);
