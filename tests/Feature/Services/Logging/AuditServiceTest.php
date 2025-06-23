@@ -42,6 +42,6 @@ class AuditServiceTest extends TestCase
 
         $log = AuditLog::latest()->first();
         $this->assertNotNull($log->after);
-        $this->assertEquals($productId, json_decode($log->metadata,true)['product_id']);
+        $this->assertEquals($productId, json_decode($log->metadata, true)['product_id']);
     }
 }

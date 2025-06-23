@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class ProductCacheServiceTest extends TestCase
 {
-
     public function test_get_favorites_from_cache(): void
     {
         Cache::shouldReceive('tags')
@@ -27,7 +26,7 @@ class ProductCacheServiceTest extends TestCase
             ->andReturn(['product_id' => 1]);
 
         $service = new ProductCacheService();
-        $result = $service->getFavoritesFromCache(1, fn() => ['product_id' => 1]);
+        $result = $service->getFavoritesFromCache(1, fn () => ['product_id' => 1]);
 
         $this->assertEquals(['product_id' => 1], $result);
     }
