@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthUserController;
 use App\Http\Controllers\Admin\ClientFavoritesController;
 use App\Http\Controllers\Client\AuthClientController;
+use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Client\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -19,8 +20,8 @@ Route::prefix('client')->group(function () {
             ->only(['index', 'show', 'update', 'destroy']);
 
         Route::get('favorites', [FavoriteController::class, 'index']);
-        Route::post('favorites/plus', [FavoriteController::class, 'plus']);
-        Route::post('favorites/minus', [FavoriteController::class, 'minus']);
+        Route::post('favorites', [FavoriteController::class, 'store']);
+        Route::delete('favorites/{product}', [FavoriteController::class, 'destroy']);
     });
 });
 
@@ -31,11 +32,12 @@ Route::prefix('admin')->group(function () {
         Route::get('me', [AuthUserController::class, 'me']);
         Route::post('logout', [AuthUserController::class, 'logout']);
 
+        Route::apiResource('clients', ClientController::class);
+
         Route::prefix('clients/{client}')->group(function () {
             Route::get('favorites', [ClientFavoritesController::class, 'index']);
             Route::post('favorites', [ClientFavoritesController::class, 'store']);
             Route::delete('favorites/{product}', [ClientFavoritesController::class, 'destroy']);
-
         });
     });
 });

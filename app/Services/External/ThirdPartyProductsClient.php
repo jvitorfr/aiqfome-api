@@ -8,15 +8,14 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
-readonly class ThirdPartyProductsClient
+class ThirdPartyProductsClient
 {
-    private HttpClientInterface $http;
-
     public function __construct(
-        private string $baseUrl = '',
-        private int $timeout = 5
+        private readonly string      $baseUrl = '',
+        private readonly int         $timeout = 5,
+        private ?HttpClientInterface $http = null
     ) {
-        $this->http = HttpClient::create([
+        $this->http ??= HttpClient::create([
             'base_uri' => $this->baseUrl ?: config('services.fakestore.base_uri'),
             'timeout'  => $this->timeout,
         ]);
@@ -26,7 +25,6 @@ readonly class ThirdPartyProductsClient
     {
         try {
             $response = $this->http->request('GET', "/products/{$id}");
-
             if ($response->getStatusCode() === 200) {
                 return $response->toArray();
             }

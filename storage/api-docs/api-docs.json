@@ -155,15 +155,13 @@
                         "sanctum": []
                     }
                 ]
-            }
-        },
-        "/api/admin/clients/{client}/favorites/plus": {
+            },
             "post": {
                 "tags": [
                     "Admin - Gerenciar produtos dos clientes"
                 ],
-                "summary": "Adiciona/incrementa produto nos favoritos de um cliente (admin)",
-                "operationId": "55f614f13c67813b5b7f110a28391d61",
+                "summary": "Adiciona um produto aos favoritos de um cliente (admin)",
+                "operationId": "a86d7c6f4e8fd86870e721e88c193199",
                 "parameters": [
                     {
                         "name": "client",
@@ -196,7 +194,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Produto adicionado ou incrementado",
+                        "description": "Produto favoritado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -206,7 +204,7 @@
                         }
                     },
                     "422": {
-                        "description": "Produto inválido"
+                        "description": "Produto inválido ou já favoritado"
                     }
                 },
                 "security": [
@@ -216,13 +214,13 @@
                 ]
             }
         },
-        "/api/admin/clients/{client}/favorites/minus": {
-            "post": {
+        "/api/admin/clients/{client}/favorites/{product}": {
+            "delete": {
                 "tags": [
                     "Admin - Gerenciar produtos dos clientes"
                 ],
-                "summary": "Remove/decrementa produto dos favoritos de um cliente (admin)",
-                "operationId": "39fc21cd5b5f484b8309a78864077799",
+                "summary": "Remove um produto dos favoritos de um cliente (admin)",
+                "operationId": "c770d4109c26fd86757db31664ae222a",
                 "parameters": [
                     {
                         "name": "client",
@@ -232,30 +230,20 @@
                         "schema": {
                             "type": "integer"
                         }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "product_id"
-                                ],
-                                "properties": {
-                                    "product_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
+                    },
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "ID do produto a ser removido",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
-                        "description": "Quantidade atualizada ou item removido"
+                        "description": "Favorito removido com sucesso"
                     },
                     "404": {
                         "description": "Favorito não encontrado"
@@ -501,31 +489,25 @@
                         "bearerAuth": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/client/favorites/{product}": {
             "delete": {
                 "tags": [
                     "Cliente - Produtos favoritos"
                 ],
                 "summary": "Decrementa ou remove um favorito",
-                "operationId": "d512c625d4cd55d61238d55e6dfe629a",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "product_id"
-                                ],
-                                "properties": {
-                                    "product_id": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "operationId": "983845247a025bd5c3514a2f099c67b1",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Quantidade atualizada ou item removido"

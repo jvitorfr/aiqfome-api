@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AdminFavoriteTest extends TestCase
+class ClientFavoritesControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -33,18 +33,18 @@ class AdminFavoriteTest extends TestCase
         $client = Client::factory()->create();
         $response = $this->withHeaders([
             'Authorization' => '',
-        ])->getJson("/api/admin/clients/{$client->id}/favorites");
+        ])->getJson("/api/admin/clients/$client->id/favorites");
 
         $response->assertStatus(401);
     }
 
-    public function test_client_cannot_access_admin_route(): void
+    public function test_client_authenticated_via_api_is_unauthorized_on_admin_routes(): void
     {
         $client = Client::factory()->create();
         $this->actingAs($client, 'api');
 
-        $response = $this->getJson("/api/admin/clients/{$client->id}/favorites");
-        $response->assertStatus(403);
+        $response = $this->getJson("/api/admin/clients/$client->id/favorites");
+        $response->assertStatus(401);
     }
 
     public function test_empty_favorites_list(): void
@@ -52,10 +52,10 @@ class AdminFavoriteTest extends TestCase
         $client = Client::factory()->has(Favorite::factory()->count(0))->create();
         $response = $this->withHeaders([
             'Authorization' => "Bearer {$this->createFakeUser()}"
-        ])->getJson("/api/admin/clients/{$client->id}/favorites");
+        ])->getJson("/api/admin/clients/$client->id/favorites");
 
         $response->assertOk();
-        $response->assertJsonCount(0);
+        $response->assertJsonCount(0,'data');
     }
 
     public function test_cannot_favorite_with_missing_product_id(): void
@@ -71,7 +71,8 @@ class AdminFavoriteTest extends TestCase
 
     public function test_cannot_favorite_with_invalid_product_id(): void
     {
-        $response = $this->postJson("/api/admin/clients/{$this->client->id}/favorites", [
+        $client = Client::factory()->create();
+        $response = $this->postJson("/api/admin/clients/{$client->id}/favorites", [
             'product_id' => 'invalid'
         ], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
@@ -83,7 +84,7 @@ class AdminFavoriteTest extends TestCase
     public function test_favoriting_invalid_external_product_returns_404(): void
     {
         $client = Client::factory()->create();
-        $response = $this->postJson("/api/admin/clients/{$client->id}/favorites", [
+        $response = $this->postJson("/api/admin/clients/$client->id/favorites", [
             'product_id' => 999999
         ], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
@@ -97,11 +98,11 @@ class AdminFavoriteTest extends TestCase
         $client = Client::factory()->create();
         Favorite::factory()->create([
             'client_id' => $client->id,
-            'product_id' => 123
+            'product_id' => 1
         ]);
 
-        $response = $this->postJson("/api/admin/clients/{$client->id}/favorites", [
-            'product_id' => 123
+        $response = $this->postJson("/api/admin/clients/$client->id/favorites", [
+            'product_id' => 1
         ], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
         ]);
@@ -112,7 +113,7 @@ class AdminFavoriteTest extends TestCase
     public function test_removing_nonexistent_favorite_is_graceful(): void
     {
         $client = Client::factory()->create();
-        $response = $this->deleteJson("/api/admin/clients/{$client->id}/favorites/9999", [], [
+        $response = $this->deleteJson("/api/admin/clients/$client->id/favorites/9999", [], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
         ]);
 

@@ -8,6 +8,7 @@ use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
+use Throwable;
 
 class ClientFavoritesController extends BaseController
 {
@@ -72,6 +73,7 @@ class ClientFavoritesController extends BaseController
      *         description="Produto inválido ou já favoritado"
      *     )
      * )
+     * @throws Throwable
      */
     public function store(Request $request, Client $client): JsonResponse
     {
@@ -81,7 +83,7 @@ class ClientFavoritesController extends BaseController
 
         return $result
             ? $this->respondMessage('Produto favoritado com sucesso')
-            : $this->respondError('Produto inválido ou já favoritado', 404);
+            : $this->respondError('Produto inválido ou já favoritado', 422);
     }
 
     /**

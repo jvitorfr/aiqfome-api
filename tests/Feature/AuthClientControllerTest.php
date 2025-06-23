@@ -62,7 +62,7 @@ class AuthClientControllerTest extends TestCase
         $response->assertStatus(401);
         $response->assertJson([
             'success' => false,
-            'error' => 'Credenciais inválidas',
+            'message' => 'Credenciais inválidas',
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
+use Throwable;
 
 class FavoriteController extends BaseController
 {
@@ -60,11 +61,12 @@ class FavoriteController extends BaseController
      *         description="Produto inválido"
      *     )
      * )
+     * @throws Throwable
      */
-    public function store(Request $request, Client $client): JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $request->validate(['product_id' => 'required|integer']);
-
+        $client = auth('api')->user();
         $result = $this->service->addFavorite($client->id, $request->product_id);
 
         return $result
@@ -74,16 +76,15 @@ class FavoriteController extends BaseController
 
     /**
      * @OA\Delete(
-     *     path="/api/client/favorites",
+     *     path="/api/client/favorites/{product}",
      *     summary="Decrementa ou remove um favorito",
      *     tags={"Cliente - Produtos favoritos"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="product",
+     *         in="path",
      *         required=true,
-     *         @OA\JsonContent(
-     *             required={"product_id"},
-     *             @OA\Property(property="product_id", type="integer")
-     *         )
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -95,9 +96,9 @@ class FavoriteController extends BaseController
      *     )
      * )
      */
-
-    public function destroy(Client $client, int $productId): JsonResponse
+    public function destroy(int $productId): JsonResponse
     {
+        $client = auth('api')->user();
         $success = $this->service->removeFavorite($client->id, $productId);
 
         return $success

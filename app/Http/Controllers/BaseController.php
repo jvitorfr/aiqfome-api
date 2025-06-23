@@ -31,7 +31,7 @@ abstract class BaseController extends Controller
     {
         return response()->json([
             'success' => false,
-            'error'   => $message,
+            'message'   => $message,
         ], $code);
     }
 }

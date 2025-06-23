@@ -7,6 +7,8 @@ use App\Repositories\FavoriteRepository;
 use App\Services\Cache\ProductCacheService;
 use App\Services\External\ThirdPartyProductsClient;
 use App\Services\Logging\AuditService;
+use Exception;
+use Throwable;
 
 class ProductService
 {
@@ -57,12 +59,16 @@ class ProductService
     }
 
 
+    /**
+     * @param int $clientId
+     * @param int $productId
+     * @return array|null
+     * @throws Throwable
+     */
     public function addFavorite(int $clientId, int $productId): ?array
     {
         $product = $this->external->getProductById($productId);
-        if (!$product) {
-            return null;
-        }
+        abort_if(!$product,404);
 
         $alreadyExists = $this->repository->getOne($clientId, $productId);
         if ($alreadyExists) {
