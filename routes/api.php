@@ -8,8 +8,6 @@ use App\Http\Controllers\Client\FavoriteController;
 use App\Http\Controllers\Client\ProductController;
 use Illuminate\Support\Facades\Route;
 
-
-
 Route::apiResource('products', ProductController::class)
     ->only(['index', 'show']);
 
@@ -45,4 +43,3 @@ Route::prefix('admin')->group(function () {
         });
     });
 });
-
