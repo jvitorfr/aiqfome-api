@@ -71,7 +71,7 @@ jobs:
         run: php artisan optimize
 
       - name: Debug - List Laravel Routes
-        run: php artisan route:list --compact
-         
+        run: php artisan route:list
+
       - name: Run tests with coverage
         run: php artisan test --coverage
