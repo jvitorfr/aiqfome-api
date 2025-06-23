@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Client;
+use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Services\ProductService;
 
 class ProductControllerTest extends TestCase
 {

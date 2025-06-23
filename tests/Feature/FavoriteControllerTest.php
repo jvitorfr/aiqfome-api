@@ -57,8 +57,11 @@ class FavoriteControllerTest extends TestCase
             $mock->shouldReceive('removeFavorite')->andReturn(true);
         });
 
-        $response = $this->deleteJson("/api/client/favorites/$productId", [],
-            $this->authHeaders($client));
+        $response = $this->deleteJson(
+            "/api/client/favorites/$productId",
+            [],
+            $this->authHeaders($client)
+        );
 
         $response->assertStatus(200)
             ->assertJsonFragment(['message' => 'Removido com sucesso']);

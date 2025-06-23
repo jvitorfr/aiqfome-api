@@ -55,7 +55,7 @@ class ClientFavoritesControllerTest extends TestCase
         ])->getJson("/api/admin/clients/$client->id/favorites");
 
         $response->assertOk();
-        $response->assertJsonCount(0,'data');
+        $response->assertJsonCount(0, 'data');
     }
 
     public function test_cannot_favorite_with_missing_product_id(): void
