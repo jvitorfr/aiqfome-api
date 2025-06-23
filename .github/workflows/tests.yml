@@ -11,16 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:16
+      mysql:
+        image: mysql:8.0
         env:
-          POSTGRES_DB: aiqfome
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: secret
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: aiqfome
+          MYSQL_USER: aiqfome
+          MYSQL_PASSWORD: aiqfome
         ports:
-          - 5432:5432
+          - 3306:3306
         options: >-
-          --health-cmd="pg_isready -U postgres"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uaiqfome -paiqfome"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -28,38 +29,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PHP 8.4
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, bcmath, pdo, pdo_mysql, xdebug
-          coverage: xdebug
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Copy .env
         run: cp .env.example .env
 
+      - name: Set env vars
+        run: |
+          echo "APP_ENV=testing" >> .env
+          echo "APP_KEY=base64:$(php -r 'echo base64_encode(random_bytes(32));')" >> .env
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=aiqfome" >> .env
+          echo "DB_USERNAME=aiqfome" >> .env
+          echo "DB_PASSWORD=aiqfome" >> .env
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
       - name: Generate application key
         run: php artisan key:generate
 
-      - name: Run database migrations
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: aiqfome
-          DB_USERNAME: aiqfome
-          DB_PASSWORD: aiqfome
+      - name: Run migrations
         run: php artisan migrate --force
 
-      - name: Run tests with coverage
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: aiqfome
-          DB_USERNAME: aiqfome
-          DB_PASSWORD: aiqfome
+      - name: Run tests
         run: php artisan test --coverage
