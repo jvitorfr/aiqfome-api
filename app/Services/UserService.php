@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Client;
 use App\Models\User;
+use App\Repositories\Contracts\IUserRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 readonly class UserService
 {
     public function __construct(
-        private UserRepository $repository
+        private IUserRepository $repository
     ) {
     }
 

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\AuditAction;
 use App\Models\Client;
 use App\Repositories\ClientRepository;
+use App\Repositories\Contracts\IClientRepository;
 use App\Services\Logging\AuditService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 readonly class ClientService
 {
     public function __construct(
-        private ClientRepository $repository,
+        private IClientRepository $repository,
         protected AuditService $audit,
     ) {
     }

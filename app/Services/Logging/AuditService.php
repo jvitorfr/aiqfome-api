@@ -3,13 +3,13 @@
 namespace App\Services\Logging;
 
 use App\Enums\AuditAction;
-use App\Repositories\AuditLogRepository;
+use App\Repositories\Contracts\IAuditLogRepository;
 use Illuminate\Database\Eloquent\Model;
 
 readonly class AuditService
 {
     public function __construct(
-        private AuditLogRepository $repository
+        private IAuditLogRepository $repository
     ) {
     }
 

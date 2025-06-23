@@ -2,12 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Contracts\IBaseRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-abstract readonly class BaseRepository
+abstract readonly class BaseRepository implements IBaseRepository
 {
     public function __construct(
         protected Model $model

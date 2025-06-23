@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AuditAction;
+use App\Repositories\Contracts\IFavoriteRepository;
 use App\Repositories\FavoriteRepository;
 use App\Services\Cache\ProductCacheService;
 use App\Services\External\ThirdPartyProductsClient;
@@ -13,7 +14,7 @@ class ProductService
 {
     public function __construct(
         protected ThirdPartyProductsClient $external,
-        protected FavoriteRepository       $repository,
+        protected IFavoriteRepository       $repository,
         protected ProductCacheService      $cache,
         protected AuditService             $audit,
     ) {
