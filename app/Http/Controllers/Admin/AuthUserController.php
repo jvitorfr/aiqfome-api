@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
+use App\Services\Logging\AuditService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Events\AuditLogEvent;
+use App\Enums\AuditAction;
 use Illuminate\Validation\ValidationException;
 
 class AuthUserController extends BaseController
@@ -61,6 +64,17 @@ class AuthUserController extends BaseController
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+
+        event(new AuditLogEvent(
+            action: AuditAction::ADMIN_LOGIN,
+            actor: $user,
+            target: $user,
+            before: [],
+            after: $user->toArray(),
+            metadata: ['ip' => $request->ip()]
+        ));
+
+
         return $this->respondSuccess([
             'token' => $token,
             'user' => $user,
@@ -81,7 +95,18 @@ class AuthUserController extends BaseController
      */
     public function logout(Request $request): JsonResponse
     {
+        $user = $request->user();
         $request->user()->tokens()->delete();
+        
+        event(new AuditLogEvent(
+            action: AuditAction::ADMIN_LOGOUT,
+            actor: $user,
+            target: $user,
+            before: [],
+            after: $user->toArray(),
+            metadata: ['ip' => $request->ip()]
+        ));
+
         return $this->respondMessage('Logout realizado com sucesso');
     }
 

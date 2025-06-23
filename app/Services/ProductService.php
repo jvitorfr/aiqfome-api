@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AuditAction;
+use App\Events\AuditLogEvent;
 use App\Repositories\Contracts\IFavoriteRepository;
 use App\Services\Cache\ProductCacheService;
 use App\Services\External\ThirdPartyProductsClient;
@@ -75,13 +76,13 @@ class ProductService
 
         $this->cache->clearFavoritesCache($clientId);
 
-        $this->audit->log(
+        event(new AuditLogEvent(
             action: AuditAction::ADD_FAVORITE_PRODUCT,
             target: $favorite,
             before: [],
             after: $favorite->toArray(),
             metadata: ['product_id' => $productId]
-        );
+        ));
 
         return $product;
     }
@@ -97,13 +98,13 @@ class ProductService
         $this->repository->delete($favorite);
         $this->cache->clearFavoritesCache($clientId);
 
-        $this->audit->log(
+        event(new AuditLogEvent(
             action: AuditAction::REMOVED_FAVORITE_PRODUCT,
             target: $favorite,
             before: $before,
             after: [],
             metadata: ['product_id' => $productId]
-        );
+        ));
         return true;
     }
 }

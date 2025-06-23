@@ -4,6 +4,10 @@ namespace App\Enums;
 
 enum AuditAction: string
 {
+    case CLIENT_LOGIN = 'CLIENT_LOGIN';
+    case ADMIN_LOGIN = 'ADMIN_LOGIN';
+    case CLIENT_LOGOUT = 'CLIENT_LOGOUT';
+    case ADMIN_LOGOUT = 'ADMIN_LOGOUT';
     case CREATED_CLIENT = 'created_client';
     case EDITED_CLIENT = 'edited_client';
     case DELETED_CLIENT = 'deleted_client';

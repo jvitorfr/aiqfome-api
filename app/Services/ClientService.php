@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AuditAction;
+use App\Events\AuditLogEvent;
 use App\Models\Client;
 use App\Repositories\Contracts\IClientRepository;
 use App\Services\Logging\AuditService;
@@ -13,8 +14,9 @@ readonly class ClientService
 {
     public function __construct(
         private IClientRepository $repository,
-        protected AuditService $audit,
-    ) {
+        protected AuditService    $audit,
+    )
+    {
     }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
@@ -31,13 +33,6 @@ readonly class ClientService
             ->find($id);
     }
 
-    public function findByEmail(string $email): ?Client
-    {
-        return $this->repository
-            ->where('email', $email)
-            ->first();
-    }
-
     /**
      */
     public function create(array $data): Model|Client
@@ -47,11 +42,11 @@ readonly class ClientService
         /** @var Client $client */
         $client = $this->repository->create($data);
 
-        $this->audit->log(
+        event(new AuditLogEvent(
             action: AuditAction::CREATED_CLIENT,
             target: $client,
             after: $client->toArray()
-        );
+        ));
 
         return $client;
     }
@@ -62,13 +57,10 @@ readonly class ClientService
     {
         $beforeClient = $client->toArray();
         $client = $this->repository->update($client, $data);
-
-        $this->audit->log(
-            action: AuditAction::EDITED_CLIENT,
+        event(new AuditLogEvent(action: AuditAction::EDITED_CLIENT,
             target: $client,
             before: $beforeClient,
-            after: $client->toArray()
-        );
+            after: $client->toArray()));
 
         return $client;
     }
@@ -76,11 +68,10 @@ readonly class ClientService
     public function delete(Client $client): void
     {
         $this->repository->delete($client);
-        $this->audit->log(
+        event(new AuditLogEvent(
             action: AuditAction::DELETED_CLIENT,
             target: $client,
             before: $client->toArray(),
-            after: $client->toArray()
-        );
+            after: $client->toArray()));
     }
 }
