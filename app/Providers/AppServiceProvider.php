@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Repositories\AuditLogRepository;
-use App\Repositories\Contracts\IAuditLogRepository;
 use App\Repositories\ClientRepository;
+use App\Repositories\Contracts\IAuditLogRepository;
 use App\Repositories\Contracts\IClientRepository;
 use App\Repositories\Contracts\IFavoriteRepository;
 use App\Repositories\Contracts\IUserRepository;

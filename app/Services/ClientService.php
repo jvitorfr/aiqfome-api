@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Enums\AuditAction;
 use App\Models\Client;
-use App\Repositories\ClientRepository;
 use App\Repositories\Contracts\IClientRepository;
 use App\Services\Logging\AuditService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

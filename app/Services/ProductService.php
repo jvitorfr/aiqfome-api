@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Enums\AuditAction;
 use App\Repositories\Contracts\IFavoriteRepository;
-use App\Repositories\FavoriteRepository;
 use App\Services\Cache\ProductCacheService;
 use App\Services\External\ThirdPartyProductsClient;
 use App\Services\Logging\AuditService;
