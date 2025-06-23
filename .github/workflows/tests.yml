@@ -54,6 +54,9 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
+      - name: Generate JWT application key
+        run: php artisan jwt:secret
+
       - name: Wait for PostgreSQL to be ready
         run: |
           until pg_isready -h 127.0.0.1 -p 5432 -U postgres; do
@@ -62,10 +65,13 @@ jobs:
           done
 
       - name: Run migrations
-        run: php artisan migrate --force
+        run: php artisan migrate --force --seed
 
-      - name: Run DB Seed
-        run: php artisan db:seed
+      - name: Optimize
+        run: php artisan optimize
 
+      - name: Debug - List Laravel Routes
+        run: php artisan route:list --compact
+         
       - name: Run tests with coverage
         run: php artisan test --coverage
