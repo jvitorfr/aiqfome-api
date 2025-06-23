@@ -11,19 +11,20 @@ class ProductCacheServiceTest extends TestCase
 {
     public function test_get_favorites_from_cache(): void
     {
+        $store = Mockery::mock();
+        $store->shouldReceive('get')
+            ->with('client_1_favorites')
+            ->once()
+            ->andReturn(null);
+
+        $store->shouldReceive('put')
+            ->with('client_1_favorites', ['product_id' => 1], Mockery::type(\DateTimeInterface::class))
+            ->once();
+
         Cache::shouldReceive('tags')
             ->with(['client:1'])
             ->once()
-            ->andReturnSelf();
-
-        Cache::shouldReceive('remember')
-            ->with(
-                'client_favorites',
-                Mockery::type(\DateTimeInterface::class),
-                Mockery::type('Closure')
-            )
-            ->once()
-            ->andReturn(['product_id' => 1]);
+            ->andReturn($store);
 
         $service = new ProductCacheService();
         $result = $service->getFavoritesFromCache(1, fn () => ['product_id' => 1]);
@@ -33,14 +34,15 @@ class ProductCacheServiceTest extends TestCase
 
     public function test_clear_favorites_cache(): void
     {
+        $store = Mockery::mock();
+        $store->shouldReceive('forget')
+            ->with('client_1_favorites')
+            ->once();
+
         Cache::shouldReceive('tags')
             ->with(['client:1'])
             ->once()
-            ->andReturnSelf();
-
-        Cache::shouldReceive('forget')
-            ->with('client_favorites')
-            ->once();
+            ->andReturn($store);
 
         new ProductCacheService()->clearFavoritesCache(1);
 

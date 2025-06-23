@@ -22,7 +22,7 @@ class AuditServiceTest extends TestCase
         $mockRepo = \Mockery::mock(IAuditLogRepository::class);
         $mockRepo->shouldReceive('create')->once()->withArgs(function ($data) use ($actor) {
             return $data['actor_id'] === $actor->id
-                && $data['actor_type'] === get_class($actor)
+                && $data['actor_type'] === $actor->getTable()
                 && $data['action'] === AuditAction::CREATED_CLIENT->value
                 && json_decode($data['after'], true)['name'] === 'Cliente XPTO';
         });
@@ -42,8 +42,10 @@ class AuditServiceTest extends TestCase
         $this->actingAs($actor, 'sanctum');
 
         $mockRepo = \Mockery::mock(IAuditLogRepository::class);
-        $mockRepo->shouldReceive('create')->once()->withArgs(function ($data) {
-            return $data['action'] === AuditAction::ADD_FAVORITE_PRODUCT->value
+        $mockRepo->shouldReceive('create')->once()->withArgs(function ($data) use ($actor) {
+            return $data['actor_id'] === $actor->id
+                && $data['actor_type'] === $actor->getTable()
+                && $data['action'] === AuditAction::ADD_FAVORITE_PRODUCT->value
                 && json_decode($data['metadata'], true)['product_id'] === 99;
         });
 

@@ -11,7 +11,7 @@ class ProductCacheService
         $key = "client_{$clientId}_favorites";
         $store = Cache::tags(["client:$clientId"]);
 
-        if (!$store->has($key)) {
+        if (!$store->get($key)) {
             $value = $callback();
             $store->put($key, $value, now()->addMinutes(6));
             return $value;
@@ -40,7 +40,6 @@ class ProductCacheService
             Cache::put($key, $value, now()->addMinutes(10));
             return $value;
         }
-        dd($key, Cache::get($key));
 
         return Cache::get($key);
     }
