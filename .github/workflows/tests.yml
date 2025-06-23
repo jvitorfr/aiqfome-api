@@ -64,5 +64,8 @@ jobs:
       - name: Run migrations
         run: php artisan migrate --force
 
+      - name: Run DB Seed
+        run: php artisan db:seed
+
       - name: Run tests with coverage
         run: php artisan test --coverage
