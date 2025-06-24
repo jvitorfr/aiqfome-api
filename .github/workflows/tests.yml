@@ -71,13 +71,6 @@ jobs:
       - name: Generate JWT secret
         run: php artisan jwt:secret
 
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          until pg_isready -h postgres -p 5432 -U postgres; do
-            echo "Aguardando PostgreSQL..."
-            sleep 1
-          done
-
       - name: Run database migrations
         run: php artisan migrate --force --seed
 
