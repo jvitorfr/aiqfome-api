@@ -40,7 +40,7 @@ class FavoriteControllerTest extends TestCase
             $mock->shouldReceive('addFavorite')->andReturn(['id' => $productId]);
         });
 
-        $response = $this->postJson("/api/client/favorites/$productId",[], $this->authHeaders($client));
+        $response = $this->postJson("/api/client/favorites/$productId", [], $this->authHeaders($client));
 
         $response->assertStatus(200)
             ->assertJsonFragment(['id' => $productId]);
@@ -69,7 +69,7 @@ class FavoriteControllerTest extends TestCase
     {
         $client = Client::factory()->create();
 
-        $response = $this->postJson('/api/client/favorites/21',[], $this->authHeaders($client));
+        $response = $this->postJson('/api/client/favorites/21', [], $this->authHeaders($client));
 
         $response->assertStatus(404);
     }
