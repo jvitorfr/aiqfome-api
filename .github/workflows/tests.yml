@@ -54,6 +54,13 @@ jobs:
       - name: Dump Composer Autoload
         run: composer dump-autoload -o
 
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h postgres -p 5432 -U postgres; do
+            echo "Aguardando PostgreSQL..."
+            sleep 1
+          done
+
       - name: Clear Laravel cache (safe for CI)
         run: php artisan optimize:clear
 
