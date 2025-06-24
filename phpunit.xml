@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+<phpunit bootstrap="vendor/autoload.php"
          colors="true"
+         beStrictAboutCoversAnnotation="false"
+         verbose="true"
+         convertDeprecationsToExceptions="true"
+         failOnWarning="true"
+         failOnRisky="true"
          executionOrder="random"
-         cacheDirectory=".phpunit.cache"
->
+         cacheResult="false">
+
     <testsuites>
         <testsuite name="Application Test Suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
 
-    <source>
+    <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">app</directory>
         </include>
-    </source>
-
-    <coverage>
         <report>
-            <text output="build/coverage.txt"/>
+            <text output="php://stdout"/>
+            <html outputDirectory="coverage-report"/>
         </report>
     </coverage>
 
@@ -38,5 +39,6 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="JWT_SECRET" value="h5nxN9WNoo79xRxGQvEm7ApHPI7emdcUMVIOTBkN9eevYexMzFR6Ma02k7kq6r2F"/>
+        <env name="FAKESTORE_API_URL" value="https://fakestoreapi.com"/>
     </php>
 </phpunit>
