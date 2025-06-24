@@ -37,44 +37,44 @@ jobs:
       - name: Copy .env
         run: cp .env.example .env
 
-      - name: Set env vars
+      - name: Set environment variables
         run: |
           echo "APP_ENV=testing" >> .env
-          echo "APP_KEY=base64:$(php -r 'echo base64_encode(random_bytes(32));')" >> .env
           echo "DB_CONNECTION=pgsql" >> .env
-          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_HOST=postgres" >> .env
           echo "DB_PORT=5432" >> .env
           echo "DB_DATABASE=aiqfome" >> .env
           echo "DB_USERNAME=postgres" >> .env
           echo "DB_PASSWORD=secret" >> .env
+          echo "APP_URL=http://localhost" >> .env
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
+      - name: Dump Composer Autoload
+        run: composer dump-autoload -o
+
+      - name: Clear Laravel cache (safe for CI)
+        run: php artisan optimize:clear
+
       - name: Generate application key
         run: php artisan key:generate
 
-      - name: Generate JWT application key
+      - name: Generate JWT secret
         run: php artisan jwt:secret
 
       - name: Wait for PostgreSQL to be ready
         run: |
-          until pg_isready -h 127.0.0.1 -p 5432 -U postgres; do
+          until pg_isready -h postgres -p 5432 -U postgres; do
             echo "Aguardando PostgreSQL..."
             sleep 1
           done
 
-      - name: Run migrations
+      - name: Run database migrations
         run: php artisan migrate --force --seed
 
-      - name: Optimize
-        run: php artisan optimize
-
-      - name: Dump Composer Autoload
-        run: composer dump-autoload
-
-      - name: Debug - List Laravel Routes
+      - name: Debug - Show route list
         run: php artisan route:list
 
-      - name: Run tests with coverage
+      - name: Run tests with code coverage
         run: php artisan test --coverage
