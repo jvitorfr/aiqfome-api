@@ -40,16 +40,16 @@ class FavoriteController extends BaseController
 
     /**
      * @OA\Post(
-     *     path="/api/client/favorites",
+     *     path="/api/client/favorites/{product}",
      *     summary="Incrementa (ou cria) um produto favorito",
      *     tags={"Cliente - Produtos favoritos"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"product_id"},
-     *             @OA\Property(property="product_id", type="integer")
-     *         )
+     *     @OA\Parameter(
+     *          name="product",
+     *           in="path",
+     *           required=true,
+     *         description="ID do produto favoritado",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -63,11 +63,10 @@ class FavoriteController extends BaseController
      * )
      * @throws Throwable
      */
-    public function store(Request $request): JsonResponse
+    public function store(int $productId): JsonResponse
     {
-        $request->validate(['product_id' => 'required|integer']);
         $client = auth('api')->user();
-        $result = $this->service->addFavorite($client->id, $request->product_id);
+        $result = $this->service->addFavorite($client->id, $productId);
 
         return $result
             ? $this->respondSuccess($result)

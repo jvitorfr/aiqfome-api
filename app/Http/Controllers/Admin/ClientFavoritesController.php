@@ -54,7 +54,7 @@ class ClientFavoritesController extends BaseController
 
     /**
      * @OA\Post(
-     *     path="/api/admin/clients/{client}/favorites",
+     *     path="/api/admin/clients/{client}/favorites/{product}",
      *     summary="Adiciona um produto aos favoritos de um cliente (admin)",
      *     tags={"Admin - Gerenciar produtos dos clientes"},
      *     security={{"bearerAuth":{}}},
@@ -65,12 +65,12 @@ class ClientFavoritesController extends BaseController
      *         description="ID do cliente",
      *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"product_id"},
-     *             @OA\Property(property="product_id", type="integer", example=1)
-     *         )
+     *     @OA\Parameter(
+     *         name="product",
+     *          in="path",
+     *          required=true,
+     *         description="ID do produto favoritado",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -84,11 +84,9 @@ class ClientFavoritesController extends BaseController
      * )
      * @throws Throwable
      */
-    public function store(Request $request, Client $client): JsonResponse
+    public function store(Client $client, int $productId): JsonResponse
     {
-        $request->validate(['product_id' => 'required|integer']);
-
-        $result = $this->service->addFavorite($client->id, $request->product_id);
+        $result = $this->service->addFavorite($client->id, $productId);
 
         return $result
             ? $this->respondMessage('Produto favoritado com sucesso')

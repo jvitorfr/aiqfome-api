@@ -22,7 +22,7 @@ Route::prefix('client')->group(function () {
 
 
         Route::get('favorites', [FavoriteController::class, 'index']);
-        Route::post('favorites', [FavoriteController::class, 'store']);
+        Route::post('favorites/{product}', [FavoriteController::class, 'store']);
         Route::delete('favorites/{product}', [FavoriteController::class, 'destroy']);
     });
 });
@@ -38,7 +38,7 @@ Route::prefix('admin')->group(function () {
 
         Route::prefix('clients/{client}')->group(function () {
             Route::get('favorites', [ClientFavoritesController::class, 'index']);
-            Route::post('favorites', [ClientFavoritesController::class, 'store']);
+            Route::post('favorites/{product}', [ClientFavoritesController::class, 'store']);
             Route::delete('favorites/{product}', [ClientFavoritesController::class, 'destroy']);
         });
     });

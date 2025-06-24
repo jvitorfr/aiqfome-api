@@ -155,13 +155,15 @@
                         "bearerAuth": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/admin/clients/{client}/favorites/{product}": {
             "post": {
                 "tags": [
                     "Admin - Gerenciar produtos dos clientes"
                 ],
                 "summary": "Adiciona um produto aos favoritos de um cliente (admin)",
-                "operationId": "a86d7c6f4e8fd86870e721e88c193199",
+                "operationId": "3509b19280894501b371a1994cf8ed48",
                 "parameters": [
                     {
                         "name": "client",
@@ -171,27 +173,17 @@
                         "schema": {
                             "type": "integer"
                         }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "product_id"
-                                ],
-                                "properties": {
-                                    "product_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    }
-                                },
-                                "type": "object"
-                            }
+                    },
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "ID do produto favoritado",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Produto favoritado com sucesso",
@@ -212,9 +204,7 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/api/admin/clients/{client}/favorites/{product}": {
+            },
             "delete": {
                 "tags": [
                     "Admin - Gerenciar produtos dos clientes"
@@ -444,31 +434,26 @@
                         "bearerAuth": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/client/favorites/{product}": {
             "post": {
                 "tags": [
                     "Cliente - Produtos favoritos"
                 ],
                 "summary": "Incrementa (ou cria) um produto favorito",
-                "operationId": "603c049cf3cc89b283dc5cdd8a5d7530",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "product_id"
-                                ],
-                                "properties": {
-                                    "product_id": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                "operationId": "a87c2f6b8d25424f65a56b8a00182065",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "ID do produto favoritado",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Produto favoritado",
@@ -489,9 +474,7 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/api/client/favorites/{product}": {
+            },
             "delete": {
                 "tags": [
                     "Cliente - Produtos favoritos"
