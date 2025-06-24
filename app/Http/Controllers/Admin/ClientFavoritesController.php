@@ -7,7 +7,6 @@ use App\Models\Client;
 use App\Services\ClientService;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
 use Throwable;
 
@@ -89,8 +88,8 @@ class ClientFavoritesController extends BaseController
         $result = $this->service->addFavorite($client->id, $productId);
 
         return $result
-            ? $this->respondMessage('Produto favoritado com sucesso')
-            : $this->respondError('Produto inválido ou já favoritado', 422);
+            ? $this->respondSuccess($result)
+            : $this->respondError('Produto inválido ou duplicado', 422);
     }
 
     /**

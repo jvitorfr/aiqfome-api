@@ -40,9 +40,7 @@ class FavoriteControllerTest extends TestCase
             $mock->shouldReceive('addFavorite')->andReturn(['id' => $productId]);
         });
 
-        $response = $this->postJson('/api/client/favorites', [
-            'product_id' => $productId
-        ], $this->authHeaders($client));
+        $response = $this->postJson("/api/client/favorites/$productId",[], $this->authHeaders($client));
 
         $response->assertStatus(200)
             ->assertJsonFragment(['id' => $productId]);
@@ -67,14 +65,12 @@ class FavoriteControllerTest extends TestCase
             ->assertJsonFragment(['message' => 'Removido com sucesso']);
     }
 
-    public function test_invalid_favorite_returns_422()
+    public function test_invalid_favorite_returns_404()
     {
         $client = Client::factory()->create();
 
-        $response = $this->postJson('/api/client/favorites', [
-            'product_id' => null
-        ], $this->authHeaders($client));
+        $response = $this->postJson('/api/client/favorites/21',[], $this->authHeaders($client));
 
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 }

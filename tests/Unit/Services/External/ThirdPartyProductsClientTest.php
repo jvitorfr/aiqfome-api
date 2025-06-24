@@ -2,16 +2,25 @@
 
 namespace Tests\Unit\Services\External;
 
-use App\Facades\ThirdPartyLogger;
 use App\Services\External\ThirdPartyProductsClient;
-use Illuminate\Support\Facades\Facade;
+use App\Services\Logging\ThirdPartyLogger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class ThirdPartyProductsClientTest extends TestCase
 {
-    public function test_get_product_by_id_returns_data()
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Reseta qualquer binding anterior do logger
+        if (app()->bound(ThirdPartyLogger::class)) {
+            app()->forgetInstance(ThirdPartyLogger::class);
+        }
+    }
+
+    public function test_get_product_by_id_returns_data(): void
     {
         $mockResponse = $this->createMock(ResponseInterface::class);
         $mockResponse->method('getStatusCode')->willReturn(200);
@@ -31,13 +40,11 @@ class ThirdPartyProductsClientTest extends TestCase
         $this->assertEquals('Produto A', $result['title']);
     }
 
-    public function test_get_product_by_id_handles_exception_and_returns_null()
+    public function test_get_product_by_id_handles_exception_and_returns_null(): void
     {
-        Facade::setFacadeApplication(app());
-
-        \Mockery::mock('alias:' . ThirdPartyLogger::class)
-            ->shouldReceive('warning')
-            ->once();
+        $mockLogger = \Mockery::mock(ThirdPartyLogger::class);
+        $mockLogger->shouldReceive('warning')->once();
+        app()->instance(ThirdPartyLogger::class, $mockLogger);
 
         $mockHttp = $this->createMock(HttpClientInterface::class);
         $mockHttp->method('request')->willThrowException(new \Exception('Erro fake'));
@@ -49,7 +56,7 @@ class ThirdPartyProductsClientTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function test_get_all_returns_array()
+    public function test_get_all_returns_array(): void
     {
         $mockResponse = $this->createMock(ResponseInterface::class);
         $mockResponse->method('toArray')->willReturn([
@@ -57,7 +64,8 @@ class ThirdPartyProductsClientTest extends TestCase
         ]);
 
         $mockHttp = $this->createMock(HttpClientInterface::class);
-        $mockHttp->method('request')
+        $mockHttp->expects($this->once())
+            ->method('request')
             ->with('GET', '/products')
             ->willReturn($mockResponse);
 

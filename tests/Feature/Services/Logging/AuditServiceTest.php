@@ -30,8 +30,7 @@ class AuditServiceTest extends TestCase
             ]);
         });
 
-        $this->postJson("/api/admin/clients/$client->id/favorites", [
-            'product_id' => $productId
+        $this->postJson("/api/admin/clients/$client->id/favorites/$productId", [
         ]);
 
         $this->assertDatabaseHas('audit_logs', [

@@ -6,7 +6,6 @@ use App\Models\Client;
 use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Facade;
 use Tests\TestCase;
 
 class ClientFavoritesControllerTest extends TestCase
@@ -16,6 +15,14 @@ class ClientFavoritesControllerTest extends TestCase
     private Client $client;
     private string $token;
 
+
+    protected function mockThirdPartyLogger(): void
+    {
+        $mock = \Mockery::mock(\App\Services\Logging\ThirdPartyLogger::class);
+        $mock->shouldReceive('warning')->once();
+
+        $this->app->instance(\App\Services\Logging\ThirdPartyLogger::class, $mock);
+    }
 
     private function createFakeUser(): string
     {
@@ -62,43 +69,36 @@ class ClientFavoritesControllerTest extends TestCase
     public function test_cannot_favorite_with_missing_product_id(): void
     {
         $client = Client::factory()->create();
-        $response = $this->postJson("/api/admin/clients/$client->id/favorites", [], [
+        $response = $this->postJson("/api/admin/clients/$client->id/favorites/", [], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
         ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['product_id']);
+        $response->assertMethodNotAllowed();
     }
 
     public function test_cannot_favorite_with_invalid_product_id(): void
     {
+        $this->mockThirdPartyLogger();
         $client = Client::factory()->create();
-        $response = $this->postJson("/api/admin/clients/{$client->id}/favorites", [
-            'product_id' => 'invalid'
-        ], [
+
+        $response = $this->postJson("/api/admin/clients/{$client->id}/favorites/999", [], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
         ]);
-
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 
     public function test_favoriting_invalid_external_product_returns_404(): void
     {
-        Facade::setFacadeApplication(app());
-        \Mockery::mock('alias:App\Facades\ThirdPartyLogger')
-            ->shouldReceive('warning')
-            ->once()
-            ->andReturnNull();
-
+        $this->mockThirdPartyLogger();
         $client = Client::factory()->create();
-        $response = $this->postJson("/api/admin/clients/$client->id/favorites", [
-            'product_id' => 999999
-        ], [
+
+        $response = $this->postJson("/api/admin/clients/{$client->id}/favorites/999999", [], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
         ]);
 
         $response->assertStatus(404);
     }
+
 
     public function test_duplicate_favorite_is_rejected(): void
     {
@@ -108,8 +108,7 @@ class ClientFavoritesControllerTest extends TestCase
             'product_id' => 1
         ]);
 
-        $response = $this->postJson("/api/admin/clients/$client->id/favorites", [
-            'product_id' => 1
+        $response = $this->postJson("/api/admin/clients/$client->id/favorites/1", [
         ], [
             'Authorization' => "Bearer {$this->createFakeUser()}"
         ]);

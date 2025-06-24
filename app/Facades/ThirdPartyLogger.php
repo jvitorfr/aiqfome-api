@@ -17,6 +17,6 @@ class ThirdPartyLogger extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'thirdparty-logger';
+        return \App\Services\Logging\ThirdPartyLogger::class;
     }
 }
