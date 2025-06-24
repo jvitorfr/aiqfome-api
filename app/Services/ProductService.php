@@ -52,7 +52,7 @@ class ProductService
                 );
 
                 if ($product) {
-                    $products[] = array_merge($product, ['quantity' => $favorite->quantity]);
+                    $products[] = $product;
                 }
             }
 
