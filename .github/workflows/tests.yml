@@ -74,5 +74,8 @@ jobs:
       - name: Run database migrations
         run: php artisan migrate --force --seed
 
-      - name: Run tests with code coverage
+      - name: Migrate PHPUnit configuration
         run: ./vendor/bin/phpunit --migrate-configuration
+
+      - name: Run tests with code coverage
+        run: php artisan test --coverage
