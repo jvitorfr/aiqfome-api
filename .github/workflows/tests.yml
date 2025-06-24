@@ -75,4 +75,4 @@ jobs:
         run: php artisan migrate --force --seed
 
       - name: Run tests with code coverage
-        run: php artisan test --coverage
+        run: ./vendor/bin/phpunit --migrate-configuration
