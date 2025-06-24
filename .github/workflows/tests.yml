@@ -46,6 +46,7 @@ jobs:
           echo "DB_DATABASE=aiqfome" >> .env
           echo "DB_USERNAME=postgres" >> .env
           echo "DB_PASSWORD=secret" >> .env
+          echo "CACHE_STORE=array" >> .env
           echo "APP_URL=http://localhost" >> .env
 
       - name: Install Composer dependencies
