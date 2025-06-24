@@ -95,7 +95,7 @@ php artisan l5-swagger:generate
 | Método | Rota                                           | Descrição                        |
 |--------|------------------------------------------------|----------------------------------|
 | GET    | /api/admin/clients/{client}/favorites          | Lista favoritos do cliente       |
-| POST   | /api/admin/clients/{client}/favorites          | Adiciona favorito ao cliente     |
+| POST   | /api/admin/clients/{client}/favorites/{product}| Adiciona favorito ao cliente     |
 | DELETE | /api/admin/clients/{client}/favorites/{product}| Remove favorito do cliente       |
 
 ### 👤 Autenticação Admin
@@ -125,7 +125,7 @@ php artisan l5-swagger:generate
 | Método | Rota                            | Descrição                      |
 |--------|---------------------------------|--------------------------------|
 | GET    | /api/client/favorites           | Lista favoritos                |
-| POST   | /api/client/favorites           | Adiciona favorito              |
+| POST   | /api/client/favorites/{product} | Adiciona favorito              |
 | DELETE | /api/client/favorites/{product} | Remove favorito                |
 
 ---
